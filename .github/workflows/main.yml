@@ -1,0 +1,31 @@
+name: ASP.NET Core CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Restore dependencies
+      working-directory: S3DB-Individual-Project-Tony
+      run: dotnet restore 
+
+    - name: Build project
+      working-directory: S3DB-Individual-Project-Tony
+      run: dotnet build --no-restore "S3DB-Individual-Project-Tony.sln"
+
+   
