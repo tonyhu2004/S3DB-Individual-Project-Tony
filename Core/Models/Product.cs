@@ -22,9 +22,9 @@ namespace Core.Models
         [StringLength(255)]
         public string Description { get; set; }
 
-        List<Productinformation>? Productinformation { get; set; }
+        public List<Productinformation>? Productinformation { get; set; }
 
-        List<Review>? Reviews { get; set; }
+        public List<Review>? Reviews { get; set; }
     }
 
 }
