@@ -1,0 +1,6 @@
+@S3DB_Individual_Project_Tony_HostAddress = http://localhost:5070
+
+GET {{S3DB_Individual_Project_Tony_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
