@@ -10,8 +10,8 @@ namespace Core.Interfaces
     public interface IProductRepository
     {
         IEnumerable<Product>GetProducts ();
-        Product GetProductBy(int id);
-        void CreateProduct(Product product);
+        Product? GetProductBy(int id);
+        bool CreateProduct(Product product);
         bool UpdateProduct(int id, Product product);
         bool DeleteProduct(int id);
     }

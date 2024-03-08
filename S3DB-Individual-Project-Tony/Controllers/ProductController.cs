@@ -28,6 +28,7 @@ namespace S3DB_Individual_Project_Tony.Controllers
             {
                 productsViewModel.Add(new ProductViewModel
                 {
+                    Id = product.ID,
                     Name = product.Name,
                     Price = product.Price,
                     Description = product.Description,
@@ -40,13 +41,18 @@ namespace S3DB_Individual_Project_Tony.Controllers
         public ActionResult Get(int id)
         {
             Product product = _service.GetProductBy(id);
-            ProductViewModel productViewModel = new ProductViewModel
+            if (product != null)
             {
-                Name = product.Name,
-                Price = product.Price,
-                Description = product.Description,
-            };
-            return Ok(productViewModel);
+                ProductViewModel productViewModel = new ProductViewModel
+                {
+                    Id = product.ID,
+                    Name = product.Name,
+                    Price = product.Price,
+                    Description = product.Description,
+                };
+                return Ok(productViewModel);
+            }
+            return BadRequest();
         }
 
 
@@ -77,7 +83,12 @@ namespace S3DB_Individual_Project_Tony.Controllers
         [HttpDelete("")]
         public ActionResult Delete(int id)
         {
-            return Ok(_service.DeleteProduct(id));
+            bool result = _service.DeleteProduct(id);
+            if (result)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
         }
     }
 }

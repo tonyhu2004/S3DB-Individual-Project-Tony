@@ -21,25 +21,59 @@ namespace Core.Services
             return _repository.GetProducts();
         }
 
-        public Product GetProductBy(int id)
+        public Product? GetProductBy(int id)
         {
             return _repository.GetProductBy(id);
         }
 
         public bool CreateProduct(Product product)
         {
-            _repository.CreateProduct(product);
-            return true;
+            if (product == null)
+            {
+                return false;
+            }
+            if (!IsProductComplete(product))
+            {
+                return false;
+            }
+            return _repository.CreateProduct(product);
         }
 
         public bool UpdateProduct(int id, Product product)
         {
+            if (product == null)
+            {
+                return false;
+            }
+            if (!IsProductComplete(product))
+            {
+                return false;
+            }
+            Product? existingProduct = _repository.GetProductBy(id); 
+            if (existingProduct == null)
+            {
+                return false;
+            }
             return _repository.UpdateProduct(id, product);
         }
 
         public bool DeleteProduct(int id)
         {
+            Product? existingProduct = _repository.GetProductBy(id);
+            if (existingProduct == null)
+            {
+                return false;
+            }
             return _repository.DeleteProduct(id);
+        }
+
+        private static bool IsProductComplete(Product product)
+        {
+            if (string.IsNullOrEmpty(product.Name) || product.Price < 0 || string.IsNullOrEmpty(product.Description))
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

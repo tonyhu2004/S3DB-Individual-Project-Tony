@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Repositories
 {
-    public class ProductRepository:IProductRepository
+    public class ProductRepository : IProductRepository
     {
         private readonly ApplicationDbContext _dbContext;
 
@@ -26,16 +26,17 @@ namespace DataAccess.Repositories
             return products;
         }
 
-        public Product GetProductBy(int id)
+        public Product? GetProductBy(int id)
         {
             var product = _dbContext.Products.FirstOrDefault(p => p.ID == id);
             return product;
         }
 
-        public void CreateProduct(Product product)
+        public bool CreateProduct(Product product)
         {
             _dbContext.Products.Add(product);
             _dbContext.SaveChanges();
+            return true;
         }
 
         public bool UpdateProduct(int id, Product product)

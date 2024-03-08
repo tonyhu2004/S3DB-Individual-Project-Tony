@@ -25,7 +25,7 @@ builder.Services.AddScoped<ProductService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin", builder =>
-        builder.AllowAnyOrigin()
+        builder.WithOrigins("http://localhost:5173")
                .AllowAnyMethod()
                .AllowAnyHeader());
 });
