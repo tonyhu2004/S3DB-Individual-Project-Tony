@@ -26,10 +26,6 @@ namespace Core.UnitTest
                    Description = "Test2",
                }
             });
-
-            ProductService productService = new ProductService(mock.Object);
-            List<Product> actual = (List<Product>)productService.GetProducts();
-
             List<Product> expected = new List<Product>
             {
                new Product
@@ -45,6 +41,9 @@ namespace Core.UnitTest
                    Description = "Test2",
                }
             };
+            ProductService productService = new ProductService(mock.Object);
+
+            List<Product> actual = (List<Product>)productService.GetProducts();
 
             Assert.Equal(expected[0].Name, actual[0].Name);
             Assert.Equal(expected[0].Price, actual[0].Price);
@@ -66,10 +65,6 @@ namespace Core.UnitTest
                     Price = 32.47M,
                     Description = "Test2",
                 });
-
-            ProductService productService = new ProductService(mock.Object);
-            Product? actual = productService.GetProductBy(2);
-
             Product expected = new Product
             {
                 ID = 2,
@@ -77,6 +72,9 @@ namespace Core.UnitTest
                 Price = 32.47M,
                 Description = "Test2",
             };
+            ProductService productService = new ProductService(mock.Object);
+
+            Product? actual = productService.GetProductBy(2);
 
             Assert.Equal(expected.Name, actual.Name);
             Assert.Equal(expected.Price, actual.Price);
@@ -88,8 +86,8 @@ namespace Core.UnitTest
         {
             var mock = new Mock<IProductRepository>();
             mock.Setup(p => p.GetProductBy(2)).Returns(null as Product);
-
             ProductService productService = new ProductService(mock.Object);
+
             Product? actual = productService.GetProductBy(2);
 
             Assert.Null(actual);
@@ -105,10 +103,8 @@ namespace Core.UnitTest
                 Price = 32.47M,
                 Description = "Test2",
             };
-
             var mock = new Mock<IProductRepository>();
             mock.Setup(p => p.CreateProduct(product)).Returns(true);
-
             ProductService productService = new ProductService(mock.Object);
 
             bool result = productService.CreateProduct(product);
@@ -121,7 +117,6 @@ namespace Core.UnitTest
         {
             var mock = new Mock<IProductRepository>();
             mock.Setup(p => p.CreateProduct(null)).Returns(true);
-
             ProductService productService = new ProductService(mock.Object);
 
             bool result = productService.CreateProduct(null);
@@ -133,10 +128,8 @@ namespace Core.UnitTest
         public void Create_Product_Is_Not_Complete_Failure()
         {
             Product product = new Product();
-
             var mock = new Mock<IProductRepository>();
             mock.Setup(p => p.CreateProduct(product)).Returns(true);
-
             ProductService productService = new ProductService(mock.Object);
 
             bool result = productService.CreateProduct(product);
@@ -154,11 +147,9 @@ namespace Core.UnitTest
                 Price = 32.47M,
                 Description = "Test2",
             };
-
             var mock = new Mock<IProductRepository>();
             mock.Setup(p => p.UpdateProduct(2, product)).Returns(true);
             mock.Setup(p => p.GetProductBy(2)).Returns(product);
-
             ProductService productService = new ProductService(mock.Object);
 
             bool result = productService.UpdateProduct(2, product);
@@ -171,9 +162,7 @@ namespace Core.UnitTest
         {
             var mock = new Mock<IProductRepository>();
             mock.Setup(p => p.UpdateProduct(2, null)).Returns(true);
-
             ProductService productService = new ProductService(mock.Object);
-
             bool result = productService.UpdateProduct(2, null);
 
             Assert.False(result);
@@ -186,7 +175,6 @@ namespace Core.UnitTest
 
             var mock = new Mock<IProductRepository>();
             mock.Setup(p => p.UpdateProduct(2, product)).Returns(true);
-
             ProductService productService = new ProductService(mock.Object);
 
             bool result = productService.UpdateProduct(2, product);
@@ -204,11 +192,9 @@ namespace Core.UnitTest
                 Price = 32.47M,
                 Description = "Test2",
             };
-
             var mock = new Mock<IProductRepository>();
             mock.Setup(p => p.UpdateProduct(2, product)).Returns(true);
             mock.Setup(p => p.GetProductBy(2)).Returns(null as Product);
-
             ProductService productService = new ProductService(mock.Object);
 
             bool result = productService.UpdateProduct(2, product);
@@ -229,8 +215,8 @@ namespace Core.UnitTest
             var mock = new Mock<IProductRepository>();
             mock.Setup(p => p.GetProductBy(2)).Returns(product);
             mock.Setup(p => p.DeleteProduct(2)).Returns(true);
-
             ProductService productService = new ProductService(mock.Object);
+
             bool result = productService.DeleteProduct(2);
 
             Assert.True(result);
@@ -242,8 +228,8 @@ namespace Core.UnitTest
             var mock = new Mock<IProductRepository>();
             mock.Setup(p => p.GetProductBy(2)).Returns(null as Product);
             mock.Setup(p => p.DeleteProduct(2)).Returns(true);
-
             ProductService productService = new ProductService(mock.Object);
+
             bool result = productService.DeleteProduct(2);
 
             Assert.False(result);

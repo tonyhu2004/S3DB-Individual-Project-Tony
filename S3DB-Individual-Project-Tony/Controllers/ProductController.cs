@@ -40,7 +40,7 @@ namespace S3DB_Individual_Project_Tony.Controllers
         [HttpGet("{id}")]
         public ActionResult Get(int id)
         {
-            Product product = _service.GetProductBy(id);
+            Product? product = _service.GetProductBy(id);
             if (product != null)
             {
                 ProductViewModel productViewModel = new ProductViewModel
