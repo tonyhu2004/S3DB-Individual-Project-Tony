@@ -29,5 +29,5 @@ jobs:
 
     - name: Run xUnit tests
       working-directory: S3DB-Individual-Project-Tony    
-      run: dotnet test --no-build --verbosity normal 
+      run: dotnet test --no-build  
    
