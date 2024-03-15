@@ -19,6 +19,7 @@ namespace S3DB_Individual_Project_Tony.Controllers
             _service = productService;
         }
 
+
         [HttpGet("")]
         public ActionResult Get()
         {
@@ -37,7 +38,32 @@ namespace S3DB_Individual_Project_Tony.Controllers
             return Ok(productsViewModel);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("paged")] // Remove the route template from the attribute
+        public ActionResult Get(int currentPage, int amount)
+        {
+            List<Product> products = (List<Product>)_service.GetPageProducts(currentPage, amount);
+            List<ProductViewModel> productsViewModel = new List<ProductViewModel>();
+            int productCount = _service.GetProductCount();
+            foreach (Product product in products)
+            {
+                productsViewModel.Add(new ProductViewModel
+                {
+                    Id = product.ID,
+                    Name = product.Name,
+                    Price = product.Price,
+                    Description = product.Description,
+                });
+            }
+            var response = new
+            {
+                Products = productsViewModel,
+                ProductCount = productCount
+            };
+            return Ok(response);
+        }
+
+
+        [HttpGet("{id:int}")]
         public ActionResult Get(int id)
         {
             Product? product = _service.GetProductBy(id);
@@ -68,7 +94,7 @@ namespace S3DB_Individual_Project_Tony.Controllers
             return Ok(_service.CreateProduct(product));
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id:int}")]
         public ActionResult Put(int id, [FromBody] ProductViewModel productViewModel)
         {
             Product product = new Product

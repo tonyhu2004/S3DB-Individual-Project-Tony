@@ -20,7 +20,18 @@ namespace Core.Services
         {
             return _repository.GetProducts();
         }
+        
+        public IEnumerable<Product> GetPageProducts(int currentPage, int amount)
+        {
+            int lastProduct = (currentPage - 1)*amount;
+            return _repository.GetPageProducts(lastProduct, amount);
+        }
 
+        public int GetProductCount ()
+        {
+            return _repository.GetProductCount();
+        }
+         
         public Product? GetProductBy(int id)
         {
             return _repository.GetProductBy(id);

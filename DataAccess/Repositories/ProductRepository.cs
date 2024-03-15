@@ -26,6 +26,22 @@ namespace DataAccess.Repositories
             return products;
         }
 
+        public IEnumerable<Product> GetPageProducts(int lastProduct, int amount)
+        {
+            var products = _dbContext.Products
+                .OrderBy(p => p.ID)
+                .Skip(lastProduct)
+                .Take(amount)
+                .ToList();
+            return products;
+        }
+
+        public int GetProductCount()
+        {
+            return _dbContext.Products
+                .Count(); 
+        }
+
         public Product? GetProductBy(int id)
         {
             var product = _dbContext.Products.FirstOrDefault(p => p.ID == id);
