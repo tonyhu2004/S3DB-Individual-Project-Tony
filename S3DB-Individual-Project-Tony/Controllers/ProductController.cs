@@ -1,5 +1,6 @@
 ﻿using Core.Models;
 using Core.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
@@ -9,6 +10,7 @@ using System.IO;
 
 namespace S3DB_Individual_Project_Tony.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class ProductController : ControllerBase
@@ -18,7 +20,6 @@ namespace S3DB_Individual_Project_Tony.Controllers
         {
             _service = productService;
         }
-
 
         [HttpGet("")]
         public ActionResult Get()
@@ -38,7 +39,8 @@ namespace S3DB_Individual_Project_Tony.Controllers
             return Ok(productsViewModel);
         }
 
-        [HttpGet("paged")] // Remove the route template from the attribute
+        [AllowAnonymous]
+        [HttpGet("paged")] 
         public ActionResult Get(int currentPage, int amount)
         {
             List<Product> products = (List<Product>)_service.GetPageProducts(currentPage, amount);
@@ -62,23 +64,19 @@ namespace S3DB_Individual_Project_Tony.Controllers
             return Ok(response);
         }
 
-
+        [AllowAnonymous]
         [HttpGet("{id:int}")]
         public ActionResult Get(int id)
         {
             Product? product = _service.GetProductBy(id);
-            if (product != null)
+            ProductViewModel productViewModel = new ProductViewModel
             {
-                ProductViewModel productViewModel = new ProductViewModel
-                {
-                    Id = product.ID,
-                    Name = product.Name,
-                    Price = product.Price,
-                    Description = product.Description,
-                };
-                return Ok(productViewModel);
-            }
-            return BadRequest();
+                Id = product.ID,
+                Name = product.Name,
+                Price = product.Price,
+                Description = product.Description,
+            };
+            return Ok(productViewModel);
         }
 
 
@@ -106,15 +104,10 @@ namespace S3DB_Individual_Project_Tony.Controllers
             return Ok(_service.UpdateProduct(id, product));
         }
 
-        [HttpDelete("")]
+        [HttpDelete("{id:int}")]
         public ActionResult Delete(int id)
         {
-            bool result = _service.DeleteProduct(id);
-            if (result)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result);
+            return Ok(_service.DeleteProduct(id));
         }
     }
 }

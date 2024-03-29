@@ -39,10 +39,6 @@ namespace Core.Services
 
         public bool CreateProduct(Product product)
         {
-            if (product == null)
-            {
-                return false;
-            }
             if (!IsProductComplete(product))
             {
                 return false;
@@ -52,10 +48,6 @@ namespace Core.Services
 
         public bool UpdateProduct(int id, Product product)
         {
-            if (product == null)
-            {
-                return false;
-            }
             if (!IsProductComplete(product))
             {
                 return false;
