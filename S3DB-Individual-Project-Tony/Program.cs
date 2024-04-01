@@ -5,6 +5,7 @@ using Core.Models;
 using Core.Services;
 using Core.Interfaces;
 using DataAccess.Repositories;
+using S3DB_Individual_Project_Tony.CustomFilter;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ShopHopConnection") 
@@ -20,6 +21,8 @@ builder.Services.AddControllers();
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ProductService>();
+
+builder.Services.AddScoped<CustomExceptionFilter>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddCors(options =>

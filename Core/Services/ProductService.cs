@@ -27,21 +27,26 @@ namespace Core.Services
             return _repository.GetPageProducts(lastProduct, amount);
         }
 
-        public int GetProductCount ()
+        public int GetProductCount()
         {
             return _repository.GetProductCount();
         }
          
         public Product? GetProductBy(int id)
         {
-            return _repository.GetProductBy(id);
+            Product? existingProduct = _repository.GetProductBy(id);
+            if (existingProduct == null)
+            {
+                throw new ArgumentException("Product doesn't exist");
+            }
+            return existingProduct;
         }
 
         public bool CreateProduct(Product product)
         {
             if (!IsProductComplete(product))
             {
-                return false;
+                throw new InvalidOperationException("Product isn't complete");
             }
             return _repository.CreateProduct(product);
         }
@@ -50,12 +55,12 @@ namespace Core.Services
         {
             if (!IsProductComplete(product))
             {
-                return false;
+                throw new InvalidOperationException("Product isn't complete");
             }
             Product? existingProduct = _repository.GetProductBy(id); 
             if (existingProduct == null)
             {
-                return false;
+                throw new ArgumentException("Product doesn't exist");
             }
             return _repository.UpdateProduct(id, product);
         }
@@ -65,7 +70,7 @@ namespace Core.Services
             Product? existingProduct = _repository.GetProductBy(id);
             if (existingProduct == null)
             {
-                return false;
+                throw new ArgumentException("Product doesn't exist");
             }
             return _repository.DeleteProduct(id);
         }

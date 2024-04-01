@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
+using S3DB_Individual_Project_Tony.CustomFilter;
 using S3DB_Individual_Project_Tony.ViewModels;
 using System.Data.SqlClient;
 using System.IO;
@@ -11,6 +12,7 @@ using System.IO;
 namespace S3DB_Individual_Project_Tony.Controllers
 {
     [Authorize]
+    [ServiceFilter(typeof(CustomExceptionFilter))]
     [ApiController]
     [Route("[controller]")]
     public class ProductController : ControllerBase

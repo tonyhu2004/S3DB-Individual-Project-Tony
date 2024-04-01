@@ -82,15 +82,18 @@ namespace Core.UnitTest
         }
 
         [Fact]
-        public void GetProductBy_InvalidId_ReturnsNull()
+        public void GetProductBy_InvalidId_ThrowsArgumentException()
         {
             var mock = new Mock<IProductRepository>();
             mock.Setup(p => p.GetProductBy(2)).Returns(null as Product);
             ProductService productService = new ProductService(mock.Object);
 
-            Product? actual = productService.GetProductBy(2);
+            void GetProductBy()
+            {
+                productService.GetProductBy(2);
+            }
 
-            Assert.Null(actual);
+            Assert.Throws<ArgumentException>(GetProductBy);
         }
 
         [Fact]
@@ -113,28 +116,19 @@ namespace Core.UnitTest
         }
 
         [Fact]
-        public void CreateProduct_Null_ReturnsFalse()
-        {
-            var mock = new Mock<IProductRepository>();
-            mock.Setup(p => p.CreateProduct(null)).Returns(true);
-            ProductService productService = new ProductService(mock.Object);
-
-            bool result = productService.CreateProduct(null);
-
-            Assert.False(result);
-        }
-
-        [Fact]
-        public void CreateProduct_WithInvalidProduct_ReturnsFalse()
+        public void CreateProduct_WithInvalidProduct_ThrowsInvalidOperationException()
         {
             Product product = new Product();
             var mock = new Mock<IProductRepository>();
             mock.Setup(p => p.CreateProduct(product)).Returns(true);
             ProductService productService = new ProductService(mock.Object);
 
-            bool result = productService.CreateProduct(product);
+            void CreateProduct()
+            {
+                productService.CreateProduct(product);
+            }
 
-            Assert.False(result);
+            Assert.Throws<InvalidOperationException>(CreateProduct);
         }
 
         [Fact]
@@ -158,18 +152,7 @@ namespace Core.UnitTest
         }
 
         [Fact]
-        public void UpdateProduct_Null_ReturnsFalse()
-        {
-            var mock = new Mock<IProductRepository>();
-            mock.Setup(p => p.UpdateProduct(2, null)).Returns(true);
-            ProductService productService = new ProductService(mock.Object);
-            bool result = productService.UpdateProduct(2, null);
-
-            Assert.False(result);
-        }
-
-        [Fact]
-        public void UpdateProduct_WithInvalidProduct_ReturnsFalse()
+        public void UpdateProduct_WithInvalidProduct_ThrowsInvalidOperationException()
         {
             Product product = new Product();
 
@@ -177,13 +160,16 @@ namespace Core.UnitTest
             mock.Setup(p => p.UpdateProduct(2, product)).Returns(true);
             ProductService productService = new ProductService(mock.Object);
 
-            bool result = productService.UpdateProduct(2, product);
+            void UpdateProduct()
+            {
+                productService.UpdateProduct(2, product);
+            }
 
-            Assert.False(result);
+            Assert.Throws<InvalidOperationException>(UpdateProduct);
         }
 
         [Fact]
-        public void UpdateProduct_InvalidId_ReturnsFalse()
+        public void UpdateProduct_InvalidId_ThrowsArgumentException()
         {
             Product product = new Product
             {
@@ -197,9 +183,12 @@ namespace Core.UnitTest
             mock.Setup(p => p.GetProductBy(2)).Returns(null as Product);
             ProductService productService = new ProductService(mock.Object);
 
-            bool result = productService.UpdateProduct(2, product);
+            void UpdateProduct()
+            {
+                productService.UpdateProduct(2, product);
+            }
 
-            Assert.False(result);
+            Assert.Throws<ArgumentException>(UpdateProduct);
         }
 
         [Fact]
@@ -223,16 +212,19 @@ namespace Core.UnitTest
         }
 
         [Fact]
-        public void DeleteProduct_InvalidId_ReturnsFalse()
+        public void DeleteProduct_InvalidId_ThrowsArgumentException()
         {
             var mock = new Mock<IProductRepository>();
             mock.Setup(p => p.GetProductBy(2)).Returns(null as Product);
             mock.Setup(p => p.DeleteProduct(2)).Returns(true);
             ProductService productService = new ProductService(mock.Object);
 
-            bool result = productService.DeleteProduct(2);
+            void DeleteProduct()
+            {
+                productService.DeleteProduct(2);
+            }
 
-            Assert.False(result);
+            Assert.Throws<ArgumentException>(DeleteProduct);
         }
     }
 }
