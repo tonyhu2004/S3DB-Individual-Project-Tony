@@ -9,18 +9,22 @@ using S3DB_Individual_Project_Tony.CustomFilter;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ShopHopConnection") 
-    ?? throw new InvalidOperationException("Connection string 'EntityFrameworkTestContextConnection' not found.");
+    ?? throw new InvalidOperationException("Connection string ShopHopConnection not found.");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseMySQL(connectionString));
 
 // Add services to the container.
 builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
+    .AddRoles<IdentityRole>()
+    .AddRoleManager<RoleManager<IdentityRole>>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddControllers();
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<RoleService>();
 
 builder.Services.AddScoped<CustomExceptionFilter>();
 
@@ -38,8 +42,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-app.MapIdentityApi<ApplicationUser>();
-
+app.MapGroup("/Account").MapIdentityApi<ApplicationUser>();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
