@@ -1,16 +1,15 @@
-﻿namespace S3DB_Individual_Project_Tony.ViewModels
-{
-    public class ErrorModel
-    {
-        public int StatusCode { get; set; }
-        public string? Message { get; set; }
-        public string? Details { get; set; }
+﻿namespace S3DB_Individual_Project_Tony.ViewModels;
 
-        public ErrorModel(int statusCode, string? message, string? details = null)
-        {
-            StatusCode = statusCode;
-            Message = message;
-            Details = details;
-        }
+public class ErrorModel
+{
+    public ErrorModel(int statusCode, string? message, string? details = null)
+    {
+        StatusCode = statusCode;
+        Message = message;
+        Details = details;
     }
+
+    public int StatusCode { get; set; }
+    public string? Message { get; set; }
+    public string? Details { get; set; }
 }

@@ -1,15 +1,15 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using DataAccess.Data;
+using Core.Interfaces;
 using Core.Models;
 using Core.Services;
-using Core.Interfaces;
+using DataAccess.Data;
 using DataAccess.Repositories;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using S3DB_Individual_Project_Tony.CustomFilter;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("ShopHopConnection") 
-    ?? throw new InvalidOperationException("Connection string ShopHopConnection not found.");
+var connectionString = builder.Configuration.GetConnectionString("ShopHopConnection")
+                       ?? throw new InvalidOperationException("Connection string ShopHopConnection not found.");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseMySQL(connectionString));
 
@@ -33,8 +33,8 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin", builder =>
         builder.WithOrigins("http://localhost:5173")
-               .AllowAnyMethod()
-               .AllowAnyHeader());
+            .AllowAnyMethod()
+            .AllowAnyHeader());
 });
 
 builder.Services.AddEndpointsApiExplorer();

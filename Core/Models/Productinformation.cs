@@ -1,25 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
 
-namespace Core.Models
+namespace Core.Models;
+
+public class Productinformation
 {
-    public class Productinformation
-    {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Auto-increment
-        public int ID { get; set; }
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Auto-increment
+    public int ID { get; set; }
 
-        [Required]
-        [StringLength(25)]
-        public string Category { get; set; }
+    [Required] [StringLength(25)] public string Category { get; set; }
 
-        [Required]
-        [StringLength(25)]
-        public string Value { get; set; }
+    [Required] [StringLength(25)] public string Value { get; set; }
 
-        [Required]
-        public int ProductId { get; set; }
-
-    }
+    [Required] public int ProductId { get; set; }
 }

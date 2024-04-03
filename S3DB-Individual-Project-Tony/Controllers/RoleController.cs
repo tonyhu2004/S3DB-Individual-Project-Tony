@@ -1,33 +1,40 @@
-﻿using Core.Models;
-using Core.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿using Core.Services;
 using Microsoft.AspNetCore.Mvc;
-using MySql.Data.MySqlClient;
 using S3DB_Individual_Project_Tony.CustomFilter;
-using S3DB_Individual_Project_Tony.ViewModels;
-using System.Data.SqlClient;
-using System.IO;
 
-namespace S3DB_Individual_Project_Tony.Controllers
+namespace S3DB_Individual_Project_Tony.Controllers;
+
+[ServiceFilter(typeof(CustomExceptionFilter))]
+[ApiController]
+[Route("[controller]")]
+public class RoleController : ControllerBase
 {
-    [ServiceFilter(typeof(CustomExceptionFilter))]
-    [ApiController]
-    [Route("[controller]")]
-    public class RoleController : ControllerBase
-    {
-        private readonly RoleService _service;
-        public RoleController(RoleService roleService)
-        {
-            _service = roleService;
-        }
+    private readonly RoleService _service;
 
-        [HttpPost("")]
-        public async Task<ActionResult> Post(string name)
-        {
-            var role = await _service.CreateRole(name);
-            return Ok(role);
-        }
+    public RoleController(RoleService roleService)
+    {
+        _service = roleService;
+    }
+
+    [HttpPost("")]
+    public async Task<ActionResult> Create(string roleName)
+    {
+        var role = await _service.CreateRole(roleName);
+        return Ok(role);
+    }
+
+    [HttpPost("Assign")]
+    public async Task<ActionResult> AssignRole(string roleName, string userId)
+    {
+        var role = await _service.AssignRoleToUser(roleName, userId);
+        return Ok(role);
+    }
+
+
+    [HttpPost("Remove")]
+    public async Task<ActionResult> RemoveRole(string roleName, string userId)
+    {
+        var role = await _service.RemoveRoleFromUser(roleName, userId);
+        return Ok(role);
     }
 }
