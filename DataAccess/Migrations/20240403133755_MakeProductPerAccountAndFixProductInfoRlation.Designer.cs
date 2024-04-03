@@ -3,6 +3,7 @@ using System;
 using DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240403133755_MakeProductPerAccountAndFixProductInfoRlation")]
+    partial class MakeProductPerAccountAndFixProductInfoRlation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -323,7 +326,7 @@ namespace DataAccess.Migrations
             modelBuilder.Entity("Core.Models.ProductInformation", b =>
                 {
                     b.HasOne("Core.Models.Product", "Product")
-                        .WithMany("ProductInformation")
+                        .WithMany("Productinformation")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -403,7 +406,7 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("Core.Models.Product", b =>
                 {
-                    b.Navigation("ProductInformation");
+                    b.Navigation("Productinformation");
 
                     b.Navigation("Reviews");
                 });

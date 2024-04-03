@@ -12,9 +12,9 @@ public class ProductService
         _repository = productRepository;
     }
 
-    public IEnumerable<Product> GetProducts()
+    public IEnumerable<Product> GetProducts(string userId)
     {
-        return _repository.GetProducts();
+        return _repository.GetProducts(userId);
     }
 
     public IEnumerable<Product> GetPageProducts(int currentPage, int amount)
@@ -46,13 +46,16 @@ public class ProductService
         if (!IsProductComplete(product)) throw new InvalidOperationException("Product isn't complete");
         var existingProduct = _repository.GetProductBy(id);
         if (existingProduct == null) throw new ArgumentException("Product doesn't exist");
+        if (existingProduct.AccountId != product.AccountId) throw new UnauthorizedAccessException("Product does not belong to user");
         return _repository.UpdateProduct(id, product);
     }
 
-    public bool DeleteProduct(int id)
+    public bool DeleteProduct(int id, string userId)
     {
         var existingProduct = _repository.GetProductBy(id);
         if (existingProduct == null) throw new ArgumentException("Product doesn't exist");
+        if (existingProduct.AccountId != userId) throw new UnauthorizedAccessException("Product does not belong to user");
+
         return _repository.DeleteProduct(id);
     }
 

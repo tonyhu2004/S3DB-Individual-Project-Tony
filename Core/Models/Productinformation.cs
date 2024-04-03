@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Models;
 
-public class Productinformation
+public class ProductInformation
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Auto-increment
@@ -14,4 +14,6 @@ public class Productinformation
     [Required] [StringLength(25)] public string Value { get; set; }
 
     [Required] public int ProductId { get; set; }
+    public Product Product { get; set; }
+
 }

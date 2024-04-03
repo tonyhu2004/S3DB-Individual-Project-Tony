@@ -4,7 +4,7 @@ namespace Core.Interfaces;
 
 public interface IProductRepository
 {
-    IEnumerable<Product> GetProducts();
+    IEnumerable<Product> GetProducts(string userId);
     IEnumerable<Product> GetPageProducts(int lastProduct, int amount);
     Product? GetProductBy(int id);
     int GetProductCount();

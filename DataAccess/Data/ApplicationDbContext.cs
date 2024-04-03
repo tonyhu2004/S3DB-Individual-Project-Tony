@@ -12,7 +12,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     }
 
     public DbSet<Product> Products { get; set; }
-    public DbSet<Productinformation> ProductInformations { get; set; }
+    public DbSet<ProductInformation> ProductInformations { get; set; }
     public DbSet<Review> Reviews { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -23,7 +23,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasIndex(p => p.ID)
             .IsUnique();
 
-        modelBuilder.Entity<Productinformation>()
+        modelBuilder.Entity<ProductInformation>()
             .HasIndex(pi => pi.ID)
             .IsUnique();
 

@@ -14,9 +14,10 @@ public class ProductRepository : IProductRepository
         _dbContext = new ApplicationDbContext(options);
     }
 
-    public IEnumerable<Product> GetProducts()
+    public IEnumerable<Product> GetProducts(string userId)
     {
         var products = _dbContext.Products
+            .Where(p => p.AccountId == userId)
             .ToList();
         return products;
     }
@@ -58,7 +59,7 @@ public class ProductRepository : IProductRepository
         entity.Name = product.Name;
         entity.Price = product.Price;
         entity.Description = product.Description;
-        if (product.Productinformation != null) entity.Productinformation = product.Productinformation;
+        if (product.ProductInformation != null) entity.ProductInformation = product.ProductInformation;
         if (product.Reviews != null) entity.Reviews = product.Reviews;
 
         _dbContext.SaveChanges();

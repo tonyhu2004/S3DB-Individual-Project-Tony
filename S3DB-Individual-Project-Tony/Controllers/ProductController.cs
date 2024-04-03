@@ -8,7 +8,7 @@ using System.Security.Claims;
 
 namespace S3DB_Individual_Project_Tony.Controllers;
 
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin, Seller")]
 [ServiceFilter(typeof(CustomExceptionFilter))]
 [ApiController]
 [Route("[controller]")]
@@ -26,7 +26,7 @@ public class ProductController : ControllerBase
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        var products = (List<Product>)_service.GetProducts();
+        var products = (List<Product>)_service.GetProducts(userId);
         var productsViewModel = new List<ProductViewModel>();
         foreach (var product in products)
             productsViewModel.Add(new ProductViewModel
@@ -81,11 +81,14 @@ public class ProductController : ControllerBase
     [HttpPost("")]
     public ActionResult Post([FromBody] ProductViewModel productViewModel)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
         var product = new Product
         {
             Name = productViewModel.Name,
             Price = productViewModel.Price,
-            Description = productViewModel.Description
+            Description = productViewModel.Description,
+            AccountId = userId,
         };
         return Ok(_service.CreateProduct(product));
     }
@@ -93,11 +96,14 @@ public class ProductController : ControllerBase
     [HttpPut("{id:int}")]
     public ActionResult Put(int id, [FromBody] ProductViewModel productViewModel)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
         var product = new Product
         {
             Name = productViewModel.Name,
             Price = productViewModel.Price,
-            Description = productViewModel.Description
+            Description = productViewModel.Description,
+            AccountId = userId,
         };
         return Ok(_service.UpdateProduct(id, product));
     }
@@ -105,6 +111,8 @@ public class ProductController : ControllerBase
     [HttpDelete("{id:int}")]
     public ActionResult Delete(int id)
     {
-        return Ok(_service.DeleteProduct(id));
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        return Ok(_service.DeleteProduct(id, userId));
     }
 }
