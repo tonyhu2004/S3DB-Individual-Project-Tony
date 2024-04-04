@@ -26,7 +26,7 @@ public class ProductController : ControllerBase
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        var products = (List<Product>)_service.GetProducts(userId);
+        var products = (List<Product>)_service.GetProductsBy(userId);
         var productsViewModel = new List<ProductViewModel>();
         foreach (var product in products)
             productsViewModel.Add(new ProductViewModel

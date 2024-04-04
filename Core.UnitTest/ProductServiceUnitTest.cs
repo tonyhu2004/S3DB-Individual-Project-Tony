@@ -11,19 +11,21 @@ public class ProductServiceUnitTest
     public void GetProducts_ReturnsAllProducts()
     {
         var mock = new Mock<IProductRepository>();
-        mock.Setup(p => p.GetProducts()).Returns(new List<Product>
+        mock.Setup(p => p.GetProductsBy("a1")).Returns(new List<Product>
         {
             new()
             {
                 Name = "Test1",
                 Price = 12.34M,
-                Description = "Test1"
+                Description = "Test1",
+                AccountId = "a1"
             },
             new()
             {
                 Name = "Test2",
                 Price = 32.47M,
-                Description = "Test2"
+                Description = "Test2",
+                AccountId = "a1"
             }
         });
         var expected = new List<Product>
@@ -32,18 +34,20 @@ public class ProductServiceUnitTest
             {
                 Name = "Test1",
                 Price = 12.34M,
-                Description = "Test1"
+                Description = "Test1",
+                AccountId = "a1"
             },
             new()
             {
                 Name = "Test2",
                 Price = 32.47M,
-                Description = "Test2"
+                Description = "Test2",
+                AccountId = "a1"
             }
         };
         var productService = new ProductService(mock.Object);
 
-        var actual = (List<Product>)productService.GetProducts();
+        var actual = (List<Product>)productService.GetProductsBy("a1");
 
         Assert.Equal(expected[0].Name, actual[0].Name);
         Assert.Equal(expected[0].Price, actual[0].Price);
@@ -63,14 +67,16 @@ public class ProductServiceUnitTest
                 ID = 2,
                 Name = "Test2",
                 Price = 32.47M,
-                Description = "Test2"
+                Description = "Test2",
+                AccountId = "a1"
             });
         var expected = new Product
         {
             ID = 2,
             Name = "Test2",
             Price = 32.47M,
-            Description = "Test2"
+            Description = "Test2",
+            AccountId = "a1"
         };
         var productService = new ProductService(mock.Object);
 
@@ -104,7 +110,8 @@ public class ProductServiceUnitTest
             ID = 2,
             Name = "Test2",
             Price = 32.47M,
-            Description = "Test2"
+            Description = "Test2",
+            AccountId = "a1"
         };
         var mock = new Mock<IProductRepository>();
         mock.Setup(p => p.CreateProduct(product)).Returns(true);
@@ -139,7 +146,8 @@ public class ProductServiceUnitTest
             ID = 2,
             Name = "Test2",
             Price = 32.47M,
-            Description = "Test2"
+            Description = "Test2",
+            AccountId = "a1"
         };
         var mock = new Mock<IProductRepository>();
         mock.Setup(p => p.UpdateProduct(2, product)).Returns(true);
@@ -176,10 +184,10 @@ public class ProductServiceUnitTest
             ID = 2,
             Name = "Test2",
             Price = 32.47M,
-            Description = "Test2"
+            Description = "Test2",
+            AccountId = "a1"
         };
         var mock = new Mock<IProductRepository>();
-        mock.Setup(p => p.UpdateProduct(2, product)).Returns(true);
         mock.Setup(p => p.GetProductBy(2)).Returns(null as Product);
         var productService = new ProductService(mock.Object);
 
@@ -190,6 +198,37 @@ public class ProductServiceUnitTest
 
         Assert.Throws<ArgumentException>(UpdateProduct);
     }
+    
+    [Fact]
+    public void UpdateProduct_DifferentAccountId_ThrowsUnauthorizedAccessException()
+    {
+        var existingProduct = new Product
+        {
+            ID = 2,
+            Name = "Test2",
+            Price = 32.47M,
+            Description = "Test2",
+            AccountId = "a2"
+        };
+        var product = new Product
+        {
+            ID = 2,
+            Name = "Test3",
+            Price = 32.47M,
+            Description = "Test2",
+            AccountId = "a1"
+        };
+        var mock = new Mock<IProductRepository>();
+        mock.Setup(p => p.GetProductBy(2)).Returns(existingProduct);
+        var productService = new ProductService(mock.Object);
+
+        void UpdateProduct()
+        {
+            productService.UpdateProduct(2, product);
+        }
+
+        Assert.Throws<UnauthorizedAccessException>(UpdateProduct);
+    }
 
     [Fact]
     public void DeleteProduct_ValidId_ReturnsTrue()
@@ -199,14 +238,15 @@ public class ProductServiceUnitTest
             ID = 2,
             Name = "Test2",
             Price = 32.47M,
-            Description = "Test2"
+            Description = "Test2",
+            AccountId = "a1"
         };
         var mock = new Mock<IProductRepository>();
         mock.Setup(p => p.GetProductBy(2)).Returns(product);
         mock.Setup(p => p.DeleteProduct(2)).Returns(true);
         var productService = new ProductService(mock.Object);
 
-        var result = productService.DeleteProduct(2);
+        var result = productService.DeleteProduct(2, "a1");
 
         Assert.True(result);
     }
@@ -216,14 +256,36 @@ public class ProductServiceUnitTest
     {
         var mock = new Mock<IProductRepository>();
         mock.Setup(p => p.GetProductBy(2)).Returns(null as Product);
-        mock.Setup(p => p.DeleteProduct(2)).Returns(true);
         var productService = new ProductService(mock.Object);
 
         void DeleteProduct()
         {
-            productService.DeleteProduct(2);
+            productService.DeleteProduct(2, "a1");
         }
 
         Assert.Throws<ArgumentException>(DeleteProduct);
+    }
+    
+    [Fact]
+    public void DeleteProduct_DifferentAccountId_ThrowsUnauthorizedAccessException()
+    {
+        var product = new Product
+        {
+            ID = 2,
+            Name = "Test2",
+            Price = 32.47M,
+            Description = "Test2",
+            AccountId = "a1"
+        };
+        var mock = new Mock<IProductRepository>();
+        mock.Setup(p => p.GetProductBy(2)).Returns(product);
+        var productService = new ProductService(mock.Object);
+
+        void DeleteProduct()
+        {
+            productService.DeleteProduct(2, "a2");
+        }
+
+        Assert.Throws<UnauthorizedAccessException>(DeleteProduct);
     }
 }

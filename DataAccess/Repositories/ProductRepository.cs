@@ -14,7 +14,7 @@ public class ProductRepository : IProductRepository
         _dbContext = new ApplicationDbContext(options);
     }
 
-    public IEnumerable<Product> GetProducts(string userId)
+    public IEnumerable<Product> GetProductsBy(string userId)
     {
         var products = _dbContext.Products
             .Where(p => p.AccountId == userId)

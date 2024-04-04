@@ -31,6 +31,17 @@ public class CustomExceptionFilter : IExceptionFilter
 
             context.Result = new JsonResult(error);
         }
+        else if (context.Exception is UnauthorizedAccessException)
+        {
+            var error = new ErrorModel
+            (
+                403,
+                context.Exception.Message,
+                context.Exception.StackTrace
+            );
+
+            context.Result = new JsonResult(error);
+        }
         else
         {
             var error = new ErrorModel

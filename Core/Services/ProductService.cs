@@ -12,9 +12,9 @@ public class ProductService
         _repository = productRepository;
     }
 
-    public IEnumerable<Product> GetProducts(string userId)
+    public IEnumerable<Product> GetProductsBy(string userId)
     {
-        return _repository.GetProducts(userId);
+        return _repository.GetProductsBy(userId);
     }
 
     public IEnumerable<Product> GetPageProducts(int currentPage, int amount)
@@ -61,8 +61,8 @@ public class ProductService
 
     private static bool IsProductComplete(Product product)
     {
-        if (string.IsNullOrEmpty(product.Name) || product.Price < 0 ||
-            string.IsNullOrEmpty(product.Description)) return false;
+        if (string.IsNullOrWhiteSpace(product.Name) || product.Price < 0 ||
+            string.IsNullOrWhiteSpace(product.Description) || string.IsNullOrWhiteSpace(product.AccountId)) return false;
         return true;
     }
 }
