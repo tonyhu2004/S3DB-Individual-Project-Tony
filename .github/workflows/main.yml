@@ -8,11 +8,10 @@ on:
 
 jobs:
   build:
+    runs-on: self-hosted
+    container:
+      image: ubuntu-latest
 
-    runs-on: ubuntu-latest
-
-    permissions: read-all
-      
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
