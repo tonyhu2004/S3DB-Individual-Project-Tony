@@ -34,6 +34,24 @@ public class ProductService
         if (existingProduct == null) throw new ArgumentException("Product doesn't exist");
         return existingProduct;
     }
+    public Product? GetProductWithReviewsBy(int id)
+    {
+        var existingProduct = _repository.GetProductWithReviewsBy(id);
+        if (existingProduct == null) throw new ArgumentException("Product doesn't exist");
+        if (existingProduct.Reviews != null) existingProduct.AverageRating = CalculateAverageRating(existingProduct.Reviews);
+        return existingProduct;
+    }    
+    private static decimal CalculateAverageRating(List<Review> reviews)
+    {
+        var averageRating = reviews.Count != 0 ? reviews.Average(r => r.Rating) : 0 ;
+        
+        averageRating = Math.Round(averageRating, 2);
+        var decimalAsString = averageRating.ToString();
+        var trimmedDecimal = decimalAsString.TrimEnd('0');
+        averageRating = decimal.Parse(trimmedDecimal);
+        
+        return averageRating;
+    }
 
     public bool CreateProduct(Product product)
     {
@@ -61,7 +79,7 @@ public class ProductService
 
     private static bool IsProductComplete(Product product)
     {
-        if (string.IsNullOrWhiteSpace(product.Name) || product.Price < 0 ||
+        if (string.IsNullOrWhiteSpace(product.Name) || product.Price <= 0 ||
             string.IsNullOrWhiteSpace(product.Description) || string.IsNullOrWhiteSpace(product.AccountId)) return false;
         return true;
     }

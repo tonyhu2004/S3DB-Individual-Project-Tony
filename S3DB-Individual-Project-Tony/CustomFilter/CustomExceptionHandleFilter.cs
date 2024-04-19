@@ -18,6 +18,7 @@ public class CustomExceptionFilter : IExceptionFilter
                 context.Exception.StackTrace
             );
 
+            context.HttpContext.Response.StatusCode = 500;
             context.Result = new JsonResult(error);
         }
         else if (context.Exception is InvalidOperationException)
@@ -29,6 +30,7 @@ public class CustomExceptionFilter : IExceptionFilter
                 context.Exception.StackTrace
             );
 
+            context.HttpContext.Response.StatusCode = 400;
             context.Result = new JsonResult(error);
         }
         else if (context.Exception is UnauthorizedAccessException)
@@ -40,6 +42,7 @@ public class CustomExceptionFilter : IExceptionFilter
                 context.Exception.StackTrace
             );
 
+            context.HttpContext.Response.StatusCode = 403;
             context.Result = new JsonResult(error);
         }
         else
@@ -51,6 +54,7 @@ public class CustomExceptionFilter : IExceptionFilter
                 context.Exception.StackTrace
             );
 
+            context.HttpContext.Response.StatusCode = 404;
             context.Result = new JsonResult(error);
         }
 

@@ -42,6 +42,14 @@ public class ProductRepository : IProductRepository
     {
         var product = _dbContext.Products.FirstOrDefault(p => p.ID == id);
         return product;
+    }    
+    
+    public Product? GetProductWithReviewsBy(int id)
+    {
+        var product = _dbContext.Products
+            .Include(p => p.Reviews)
+            .FirstOrDefault(p => p.ID == id);
+        return product;
     }
 
     public bool CreateProduct(Product product)

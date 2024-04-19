@@ -6,7 +6,8 @@ public interface IProductRepository
 {
     IEnumerable<Product> GetProductsBy(string userId);
     IEnumerable<Product> GetPageProducts(int lastProduct, int amount);
-    Product? GetProductBy(int id);
+    Product? GetProductBy(int id);    
+    Product? GetProductWithReviewsBy(int id);
     int GetProductCount();
     bool CreateProduct(Product product);
     bool UpdateProduct(int id, Product product);

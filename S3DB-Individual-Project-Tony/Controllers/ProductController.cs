@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using S3DB_Individual_Project_Tony.CustomFilter;
 using S3DB_Individual_Project_Tony.ViewModels;
 using System.Security.Claims;
+using S3DB_Individual_Project_Tony.RequestModels;
 
 namespace S3DB_Individual_Project_Tony.Controllers;
 
@@ -62,7 +63,6 @@ public class ProductController : ControllerBase
         return Ok(response);
     }
 
-    [AllowAnonymous]
     [HttpGet("{id:int}")]
     public ActionResult Get(int id)
     {
@@ -77,32 +77,53 @@ public class ProductController : ControllerBase
         return Ok(productViewModel);
     }
 
+    [AllowAnonymous]
+    [HttpGet("{id:int}/details")]
+    public ActionResult GetDetails(int id)
+    {
+        var product = _service.GetProductWithReviewsBy(id);
+        var productWithReviewsViewModel = new ProductWithReviewsViewModel
+        {
+            Id = product.ID,
+            Name = product.Name,
+            Price = product.Price,
+            Description = product.Description,
+            AverageRating = product.AverageRating,
+            Reviews = product.Reviews.Select(r => new ReviewViewModel
+            {
+                Rating = r.Rating,
+                Comment = r.Comment,
+                ProductId = r.ProductId,
+            }).ToList(),
+        };
+        return Ok(productWithReviewsViewModel);
+    }
 
     [HttpPost("")]
-    public ActionResult Post([FromBody] ProductViewModel productViewModel)
+    public ActionResult Post([FromBody] ProductRequest productRequest)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         var product = new Product
         {
-            Name = productViewModel.Name,
-            Price = productViewModel.Price,
-            Description = productViewModel.Description,
+            Name = productRequest.Name,
+            Price = productRequest.Price,
+            Description = productRequest.Description,
             AccountId = userId,
         };
         return Ok(_service.CreateProduct(product));
     }
 
     [HttpPut("{id:int}")]
-    public ActionResult Put(int id, [FromBody] ProductViewModel productViewModel)
+    public ActionResult Put(int id, [FromBody] ProductRequest productRequest)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         var product = new Product
         {
-            Name = productViewModel.Name,
-            Price = productViewModel.Price,
-            Description = productViewModel.Description,
+            Name = productRequest.Name,
+            Price = productRequest.Price,
+            Description = productRequest.Description,
             AccountId = userId,
         };
         return Ok(_service.UpdateProduct(id, product));

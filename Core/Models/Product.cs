@@ -24,4 +24,8 @@ public class Product
     public List<ProductInformation>? ProductInformation { get; set; }
 
     public List<Review>? Reviews { get; set; }
+    
+    [NotMapped]
+    [Column(TypeName = "decimal(10,2)")]
+    public decimal AverageRating { get; set; }
 }
