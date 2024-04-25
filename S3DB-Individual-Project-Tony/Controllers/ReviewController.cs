@@ -9,6 +9,7 @@ using Org.BouncyCastle.Asn1.Ocsp;
 using S3DB_Individual_Project_Tony.RequestModels;
 
 namespace S3DB_Individual_Project_Tony.Controllers;
+
 [Authorize]
 [ServiceFilter(typeof(CustomExceptionFilter))]
 [ApiController]
@@ -32,7 +33,7 @@ public class ReviewController : ControllerBase
             Rating = reviewRequest.Rating,
             Comment = reviewRequest.Comment,
             ProductId = reviewRequest.ProductId,
-            AccountId = userId!,
+            UserId = userId!,
             PublishedDate = DateTime.UtcNow,
         };
         return Ok(_service.CreateReview(review));

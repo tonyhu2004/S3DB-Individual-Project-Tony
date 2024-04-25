@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240403133755_MakeProductPerAccountAndFixProductInfoRlation")]
-    partial class MakeProductPerAccountAndFixProductInfoRlation
+    [Migration("20240419140123_InitalCreate")]
+    partial class InitalCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -92,10 +92,6 @@ namespace DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("AccountId")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -109,12 +105,16 @@ namespace DataAccess.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(10,2)");
 
-                    b.HasKey("ID");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
 
-                    b.HasIndex("AccountId");
+                    b.HasKey("ID");
 
                     b.HasIndex("ID")
                         .IsUnique();
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Products");
                 });
@@ -154,10 +154,6 @@ namespace DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("AccountId")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
                     b.Property<string>("Comment")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -172,14 +168,18 @@ namespace DataAccess.Migrations
                     b.Property<decimal>("Rating")
                         .HasColumnType("decimal(2,1)");
 
-                    b.HasKey("ID");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
 
-                    b.HasIndex("AccountId");
+                    b.HasKey("ID");
 
                     b.HasIndex("ID")
                         .IsUnique();
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Reviews");
                 });
@@ -314,19 +314,19 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("Core.Models.Product", b =>
                 {
-                    b.HasOne("Core.Models.ApplicationUser", "Account")
+                    b.HasOne("Core.Models.ApplicationUser", "User")
                         .WithMany()
-                        .HasForeignKey("AccountId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Account");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Core.Models.ProductInformation", b =>
                 {
                     b.HasOne("Core.Models.Product", "Product")
-                        .WithMany("Productinformation")
+                        .WithMany("ProductInformation")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -336,21 +336,21 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("Core.Models.Review", b =>
                 {
-                    b.HasOne("Core.Models.ApplicationUser", "Account")
-                        .WithMany()
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Core.Models.Product", "Product")
                         .WithMany("Reviews")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Account");
+                    b.HasOne("Core.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Product");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -406,7 +406,7 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("Core.Models.Product", b =>
                 {
-                    b.Navigation("Productinformation");
+                    b.Navigation("ProductInformation");
 
                     b.Navigation("Reviews");
                 });

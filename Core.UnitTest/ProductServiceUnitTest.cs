@@ -18,14 +18,14 @@ public class ProductServiceUnitTest
                 Name = "Test1",
                 Price = 12.34M,
                 Description = "Test1",
-                AccountId = "a1"
+                UserId = "a1"
             },
             new()
             {
                 Name = "Test2",
                 Price = 32.47M,
                 Description = "Test2",
-                AccountId = "a1"
+                UserId = "a1"
             }
         });
         var expected = new List<Product>
@@ -35,14 +35,14 @@ public class ProductServiceUnitTest
                 Name = "Test1",
                 Price = 12.34M,
                 Description = "Test1",
-                AccountId = "a1"
+                UserId = "a1"
             },
             new()
             {
                 Name = "Test2",
                 Price = 32.47M,
                 Description = "Test2",
-                AccountId = "a1"
+                UserId = "a1"
             }
         };
         var productService = new ProductService(mock.Object);
@@ -68,7 +68,7 @@ public class ProductServiceUnitTest
                 Name = "Test2",
                 Price = 32.47M,
                 Description = "Test2",
-                AccountId = "a1"
+                UserId = "a1"
             });
         var expected = new Product
         {
@@ -76,7 +76,7 @@ public class ProductServiceUnitTest
             Name = "Test2",
             Price = 32.47M,
             Description = "Test2",
-            AccountId = "a1"
+            UserId = "a1"
         };
         var productService = new ProductService(mock.Object);
 
@@ -111,7 +111,7 @@ public class ProductServiceUnitTest
             Name = "Test2",
             Price = 32.47M,
             Description = "Test2",
-            AccountId = "a1"
+            UserId = "a1"
         };
         var mock = new Mock<IProductRepository>();
         mock.Setup(p => p.CreateProduct(product)).Returns(true);
@@ -147,7 +147,7 @@ public class ProductServiceUnitTest
             Name = "Test2",
             Price = 32.47M,
             Description = "Test2",
-            AccountId = "a1"
+            UserId = "a1"
         };
         var mock = new Mock<IProductRepository>();
         mock.Setup(p => p.UpdateProduct(2, product)).Returns(true);
@@ -185,7 +185,7 @@ public class ProductServiceUnitTest
             Name = "Test2",
             Price = 32.47M,
             Description = "Test2",
-            AccountId = "a1"
+            UserId = "a1"
         };
         var mock = new Mock<IProductRepository>();
         mock.Setup(p => p.GetProductBy(2)).Returns(null as Product);
@@ -200,7 +200,7 @@ public class ProductServiceUnitTest
     }
     
     [Fact]
-    public void UpdateProduct_DifferentAccountId_ThrowsUnauthorizedAccessException()
+    public void UpdateProduct_DifferentUserId_ThrowsUnauthorizedAccessException()
     {
         var existingProduct = new Product
         {
@@ -208,7 +208,7 @@ public class ProductServiceUnitTest
             Name = "Test2",
             Price = 32.47M,
             Description = "Test2",
-            AccountId = "a2"
+            UserId = "a2"
         };
         var product = new Product
         {
@@ -216,7 +216,7 @@ public class ProductServiceUnitTest
             Name = "Test3",
             Price = 32.47M,
             Description = "Test2",
-            AccountId = "a1"
+            UserId = "a1"
         };
         var mock = new Mock<IProductRepository>();
         mock.Setup(p => p.GetProductBy(2)).Returns(existingProduct);
@@ -239,7 +239,7 @@ public class ProductServiceUnitTest
             Name = "Test2",
             Price = 32.47M,
             Description = "Test2",
-            AccountId = "a1"
+            UserId = "a1"
         };
         var mock = new Mock<IProductRepository>();
         mock.Setup(p => p.GetProductBy(2)).Returns(product);
@@ -267,7 +267,7 @@ public class ProductServiceUnitTest
     }
     
     [Fact]
-    public void DeleteProduct_DifferentAccountId_ThrowsUnauthorizedAccessException()
+    public void DeleteProduct_DifferentUserId_ThrowsUnauthorizedAccessException()
     {
         var product = new Product
         {
@@ -275,7 +275,7 @@ public class ProductServiceUnitTest
             Name = "Test2",
             Price = 32.47M,
             Description = "Test2",
-            AccountId = "a1"
+            UserId = "a1"
         };
         var mock = new Mock<IProductRepository>();
         mock.Setup(p => p.GetProductBy(2)).Returns(product);

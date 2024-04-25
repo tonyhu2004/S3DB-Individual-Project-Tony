@@ -38,7 +38,7 @@ public class ProductService
     {
         var existingProduct = _repository.GetProductWithReviewsBy(id);
         if (existingProduct == null) throw new ArgumentException("Product doesn't exist");
-        if (existingProduct.Reviews != null) existingProduct.AverageRating = CalculateAverageRating(existingProduct.Reviews);
+        if (existingProduct.Reviews != null && existingProduct.Reviews.Count != 0) existingProduct.AverageRating = CalculateAverageRating(existingProduct.Reviews);
         return existingProduct;
     }    
     private static decimal CalculateAverageRating(List<Review> reviews)
@@ -64,7 +64,7 @@ public class ProductService
         if (!IsProductComplete(product)) throw new InvalidOperationException("Product isn't complete");
         var existingProduct = _repository.GetProductBy(id);
         if (existingProduct == null) throw new ArgumentException("Product doesn't exist");
-        if (existingProduct.AccountId != product.AccountId) throw new UnauthorizedAccessException("Product does not belong to user");
+        if (existingProduct.UserId != product.UserId) throw new UnauthorizedAccessException("Product does not belong to user");
         return _repository.UpdateProduct(id, product);
     }
 
@@ -72,7 +72,7 @@ public class ProductService
     {
         var existingProduct = _repository.GetProductBy(id);
         if (existingProduct == null) throw new ArgumentException("Product doesn't exist");
-        if (existingProduct.AccountId != userId) throw new UnauthorizedAccessException("Product does not belong to user");
+        if (existingProduct.UserId != userId) throw new UnauthorizedAccessException("Product does not belong to user");
 
         return _repository.DeleteProduct(id);
     }
@@ -80,7 +80,7 @@ public class ProductService
     private static bool IsProductComplete(Product product)
     {
         if (string.IsNullOrWhiteSpace(product.Name) || product.Price <= 0 ||
-            string.IsNullOrWhiteSpace(product.Description) || string.IsNullOrWhiteSpace(product.AccountId)) return false;
+            string.IsNullOrWhiteSpace(product.Description) || string.IsNullOrWhiteSpace(product.UserId)) return false;
         return true;
     }
 }

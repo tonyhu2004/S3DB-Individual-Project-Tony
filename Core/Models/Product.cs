@@ -17,9 +17,9 @@ public class Product
 
     [Required] [StringLength(255)] public string Description { get; set; }
 
-    [Required] public string AccountId { get; set; }
+    [Required] public string UserId { get; set; }
 
-    public ApplicationUser Account { get; set; }
+    public ApplicationUser User { get; set; }
 
     public List<ProductInformation>? ProductInformation { get; set; }
 

@@ -17,7 +17,7 @@ public class ReviewRepository : IReviewRepository
     public IEnumerable<Review> GetReviewsBy(string userId)
     {
         return _dbContext.Reviews
-            .Where(r => r.AccountId == userId)
+            .Where(r => r.UserId == userId)
             .ToList();
     }
 
@@ -36,7 +36,7 @@ public class ReviewRepository : IReviewRepository
 
     public bool CreateReview(Review review)
     {
-        var entity = _dbContext.Reviews.FirstOrDefault(r=> r.AccountId == review.AccountId && r.ProductId == review.ProductId);
+        var entity = _dbContext.Reviews.FirstOrDefault(r=> r.UserId == review.UserId && r.ProductId == review.ProductId);
         if (entity != null) return false;
 
         _dbContext.Reviews.Add(review);
@@ -60,6 +60,6 @@ public class ReviewRepository : IReviewRepository
     public Review? GetReviewBy(int productId, string userId)
     {
         return _dbContext.Reviews
-            .FirstOrDefault(r => r.AccountId == userId && r.ProductId == productId);
+            .FirstOrDefault(r => r.UserId == userId && r.ProductId == productId);
     }
 }

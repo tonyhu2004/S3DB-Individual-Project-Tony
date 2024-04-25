@@ -17,7 +17,7 @@ public class ProductRepository : IProductRepository
     public IEnumerable<Product> GetProductsBy(string userId)
     {
         var products = _dbContext.Products
-            .Where(p => p.AccountId == userId)
+            .Where(p => p.UserId == userId)
             .ToList();
         return products;
     }
@@ -49,6 +49,12 @@ public class ProductRepository : IProductRepository
         var product = _dbContext.Products
             .Include(p => p.Reviews)
             .FirstOrDefault(p => p.ID == id);
+    
+        if (product?.Reviews != null && product.Reviews.Count != 0)
+        {
+            _dbContext.Entry(product).Collection(p => p.Reviews!).Query().Include(r => r.User).Load();
+        }
+    
         return product;
     }
 

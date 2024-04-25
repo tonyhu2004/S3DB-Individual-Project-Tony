@@ -81,7 +81,9 @@ public class ProductController : ControllerBase
     [HttpGet("{id:int}/details")]
     public ActionResult GetDetails(int id)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var product = _service.GetProductWithReviewsBy(id);
+        
         var productWithReviewsViewModel = new ProductWithReviewsViewModel
         {
             Id = product.ID,
@@ -89,11 +91,14 @@ public class ProductController : ControllerBase
             Price = product.Price,
             Description = product.Description,
             AverageRating = product.AverageRating,
+            UserId = userId ?? "",
             Reviews = product.Reviews.Select(r => new ReviewViewModel
             {
+                Id = r.ID,
                 Rating = r.Rating,
                 Comment = r.Comment,
-                ProductId = r.ProductId,
+                UserId = r.User.Id,
+                Username = r.User.Email!.Substring(0, r.User.Email.IndexOf('@')),
             }).ToList(),
         };
         return Ok(productWithReviewsViewModel);
@@ -109,7 +114,7 @@ public class ProductController : ControllerBase
             Name = productRequest.Name,
             Price = productRequest.Price,
             Description = productRequest.Description,
-            AccountId = userId,
+            UserId = userId,
         };
         return Ok(_service.CreateProduct(product));
     }
@@ -124,7 +129,7 @@ public class ProductController : ControllerBase
             Name = productRequest.Name,
             Price = productRequest.Price,
             Description = productRequest.Description,
-            AccountId = userId,
+            UserId = userId,
         };
         return Ok(_service.UpdateProduct(id, product));
     }

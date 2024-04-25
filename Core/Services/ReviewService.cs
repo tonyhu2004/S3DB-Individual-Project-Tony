@@ -30,15 +30,15 @@ public class ReviewService
 
     public bool CreateReview(Review review)
     {
-        if (IsReviewComplete(review)) throw new InvalidOperationException("Review isn't complete");
-        var existingReview = _repository.GetReviewBy(review.ProductId, review.AccountId);
+        if (!IsReviewComplete(review)) throw new InvalidOperationException("Review isn't complete");
+        var existingReview = _repository.GetReviewBy(review.ProductId, review.UserId);
         if (existingReview != null) throw new ArgumentException("Review already exists");
         return _repository.CreateReview(review);
     }
 
     public bool UpdateReview(int id, Review review)
     {
-        if (IsReviewComplete(review)) throw new InvalidOperationException("Review isn't complete");
+        if (!IsReviewComplete(review)) throw new InvalidOperationException("Review isn't complete");
         var existingReview = _repository.GetReviewBy(id);
         if (existingReview == null) throw new ArgumentException("Review doesn't exist");
         return _repository.UpdateReview(id, review);
@@ -46,7 +46,7 @@ public class ReviewService
     private static bool IsReviewComplete(Review review)
     {
         if (review.Rating is <= 0 or > 5 || string.IsNullOrWhiteSpace(review.Comment) ||
-            review.ProductId <= 0 || string.IsNullOrWhiteSpace(review.AccountId) || review.PublishedDate == default) return false;
+            review.ProductId <= 0 || string.IsNullOrWhiteSpace(review.UserId)) return false;
         return true;
     }
 }
