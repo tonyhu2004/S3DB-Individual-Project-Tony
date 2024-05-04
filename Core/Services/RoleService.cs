@@ -13,7 +13,7 @@ public class RoleService
         _repository = roleRepository;
     }
 
-    public Task<ApplicationUser> AssignRoleToUser(string roleName, string userId)
+    public Task<ApplicationUser?> AssignRoleToUser(string roleName, string userId)
     {
         return _repository.AssignRoleToUser(roleName, userId);
     }
@@ -25,7 +25,7 @@ public class RoleService
         return _repository.CreateRole(roleName);
     }
 
-    public Task<ApplicationUser> RemoveRoleFromUser(string roleName, string userId)
+    public Task<ApplicationUser?> RemoveRoleFromUser(string roleName, string userId)
     {
         return _repository.RemoveRoleFromUser(roleName, userId);
     }

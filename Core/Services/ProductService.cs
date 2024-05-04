@@ -73,7 +73,6 @@ public class ProductService
         var existingProduct = _repository.GetProductBy(id);
         if (existingProduct == null) throw new ArgumentException("Product doesn't exist");
         if (existingProduct.UserId != userId) throw new UnauthorizedAccessException("Product does not belong to user");
-
         return _repository.DeleteProduct(id);
     }
 

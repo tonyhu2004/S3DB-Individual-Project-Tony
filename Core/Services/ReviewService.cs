@@ -12,21 +12,21 @@ public class ReviewService
         _repository = reviewRepository;
     }
 
-    public IEnumerable<Review> GetReviewsBy(string userId)
-    {
-        return _repository.GetReviewsBy(userId);
-    }
+    // public IEnumerable<Review> GetReviewsBy(string userId)
+    // {
+    //     return _repository.GetReviewsBy(userId);
+    // }
+    //
+    // public IEnumerable<Review> GetReviewsBy(int productId)
+    // {
+    //     return _repository.GetReviewsBy(productId);
+    // }
 
-    public IEnumerable<Review> GetReviewsBy(int productId)
-    {
-        return _repository.GetReviewsBy(productId);
-    }
-
-    public Review? GetReviewBy(int id)
-    {
-        var existingReview = _repository.GetReviewBy(id);
-        return existingReview ?? throw new ArgumentException("Review doesn't exist");
-    }
+    // public Review? GetReviewBy(int id)
+    // {
+    //     var existingReview = _repository.GetReviewBy(id);
+    //     return existingReview ?? throw new ArgumentException("Review doesn't exist");
+    // }
 
     public bool CreateReview(Review review)
     {
