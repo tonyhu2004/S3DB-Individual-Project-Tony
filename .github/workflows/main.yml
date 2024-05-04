@@ -60,7 +60,7 @@ jobs:
     - name: Install DotCover
       run: |
         dotnet tool install --global JetBrains.dotCover.GlobalTool
-        
+
     - name: Build
       run: |
         ./.sonar/scanner/dotnet-sonarscanner begin /k:"ShopHop" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
@@ -68,11 +68,9 @@ jobs:
 
     - name: Test Coverage
       run: |
-        dotCover cover --targetExecutable="dotnet" --targetArguments="test --no-build" --output=dotCover.Output.html
-        ./.sonar/scanner/dotnet-sonarscanner begin /k:"ShopHop" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}" /d:sonar.cs.dotcover.reportsPaths=dotCover.Output.html
+        dotnet sonarscanner begin /k:"ShopHop"
+        /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+        /d:sonar.cs.dotcover.reportsPaths=dotCover.Output.html
         dotnet build --no-incremental
+        dotnet dotcover test --dcReportType=HTML
         ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
-
-    - name: Analyze
-      run: |
-        ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"  
