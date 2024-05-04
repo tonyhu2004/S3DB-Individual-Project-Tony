@@ -64,7 +64,7 @@ jobs:
     - name: Build
       run: |
         ./.sonar/scanner/dotnet-sonarscanner begin 
-        /k:"ShopHop" 
+        /key:"ShopHop" 
         /d:sonar.token="${{ secrets.SONAR_TOKEN }}" 
         /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
         /d:sonar.cs.dotcover.reportsPaths=dotCover.Output.html
