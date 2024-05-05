@@ -63,14 +63,15 @@ jobs:
 
     - name: Build and Analyze
       run: |
-        ./.sonar/scanner/dotnet-sonarscanner begin 
-        /k:"ShopHop" 
-        /d:sonar.token="${{ secrets.SONAR_TOKEN }}" 
-        /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
+        ./.sonar/scanner/dotnet-sonarscanner begin \
+        /k:"ShopHop" \
+        /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
+        /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}" \
         /d:sonar.cs.dotcover.reportsPaths=dotCover.Output.html
-        
-        dotnet build –no-incremental
-        
+            
+        dotnet build --no-incremental
+            
         dotnet dotcover test --dcReportType=HTML
-        
-        ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"  
+            
+        ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+
