@@ -1,3 +1,4 @@
+using CloudinaryDotNet;
 using Core.Interfaces;
 using Core.Models;
 using Core.Services;
@@ -5,6 +6,7 @@ using DataAccess.Data;
 using DataAccess.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using S3DB_Individual_Project_Tony;
 using S3DB_Individual_Project_Tony.CustomFilter;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,14 +23,26 @@ builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
 
 builder.Services.AddControllers();
 
+var cloudinaryOptions = builder.Configuration.GetSection("Cloudinary").Get<CloudinaryOptions>(); // Change here
+
+builder.Services.AddSingleton(new Cloudinary(new Account(
+    cloudinaryOptions.CloudName,
+    cloudinaryOptions.ApiKey,
+    cloudinaryOptions.ApiSecret)));
+
+builder.Services.AddScoped<ICloudinaryRepository, CloudinaryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<IChatRepository, ChatRepository>();
+builder.Services.AddScoped<ChatService>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<RoleService>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<ReviewService>();
 
 builder.Services.AddScoped<CustomExceptionFilter>();
+
+builder.Services.AddSignalR();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddCors(options =>
@@ -61,5 +75,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<ChatHub>("/chatHub"); 
 
 app.Run();

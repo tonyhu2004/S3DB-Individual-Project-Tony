@@ -35,7 +35,8 @@ public class ProductController : ControllerBase
                 Id = product.ID,
                 Name = product.Name,
                 Price = product.Price,
-                Description = product.Description
+                Description = product.Description,
+                ImageUrl = product.ImageUrl,
             });
         return Ok(productsViewModel);
     }
@@ -53,7 +54,8 @@ public class ProductController : ControllerBase
                 Id = product.ID,
                 Name = product.Name,
                 Price = product.Price,
-                Description = product.Description
+                Description = product.Description,
+                ImageUrl = product.ImageUrl,
             });
         var response = new
         {
@@ -72,7 +74,8 @@ public class ProductController : ControllerBase
             Id = product.ID,
             Name = product.Name,
             Price = product.Price,
-            Description = product.Description
+            Description = product.Description,
+            ImageUrl = product.ImageUrl,
         };
         return Ok(productViewModel);
     }
@@ -82,6 +85,7 @@ public class ProductController : ControllerBase
     public ActionResult GetDetails(int id)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var email = User.FindFirstValue(ClaimTypes.Email);
         var product = _service.GetProductWithReviewsBy(id);
         
         var productWithReviewsViewModel = new ProductWithReviewsViewModel
@@ -91,8 +95,11 @@ public class ProductController : ControllerBase
             Price = product.Price,
             Description = product.Description,
             AverageRating = product.AverageRating,
-            UserId = userId ?? "",
-            Reviews = product.Reviews.Select(r => new ReviewViewModel
+            CurrentUserId = userId ?? "",
+            UserId = product.UserId,
+            Username = product.User.Email?.Substring(0, product.User.Email.IndexOf('@')) ?? "",
+            ImageUrl = product.ImageUrl,
+            Reviews = product?.Reviews?.Select(r => new ReviewViewModel
             {
                 Id = r.ID,
                 Rating = r.Rating,
@@ -105,7 +112,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpPost("")]
-    public ActionResult Post([FromBody] ProductRequest productRequest)
+    public ActionResult Post([FromForm] ProductRequest productRequest)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -115,12 +122,13 @@ public class ProductController : ControllerBase
             Price = productRequest.Price,
             Description = productRequest.Description,
             UserId = userId,
+            FormFile = productRequest.FormFile,
         };
         return Ok(_service.CreateProduct(product));
     }
 
     [HttpPut("{id:int}")]
-    public ActionResult Put(int id, [FromBody] ProductRequest productRequest)
+    public ActionResult Put(int id, [FromForm] ProductRequest productRequest)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -130,6 +138,7 @@ public class ProductController : ControllerBase
             Price = productRequest.Price,
             Description = productRequest.Description,
             UserId = userId,
+            FormFile = productRequest.FormFile,
         };
         return Ok(_service.UpdateProduct(id, product));
     }

@@ -10,6 +10,6 @@ public class ProductRequest
     [Required] public decimal Price { get; set; }
 
     [Required] public string Description { get; set; } = "";
-
-    [Required] public decimal AverageRating { get; set; }
+    
+    [Required] public IFormFile FormFile { get; set; } 
 }
