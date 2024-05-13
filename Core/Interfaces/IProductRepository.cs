@@ -9,7 +9,7 @@ public interface IProductRepository
     Product? GetProductBy(int id);    
     Product? GetProductWithReviewsBy(int id);
     int GetProductCount();
-    bool CreateProduct(Product product);
+    int CreateProduct(Product product);
     bool UpdateProduct(int id, Product product);
     bool DeleteProduct(int id);
 }

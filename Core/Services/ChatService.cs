@@ -3,50 +3,40 @@ using Core.Models;
 
 namespace Core.Services;
 
-public class ReviewService
+public class ChatService
 {
-    private readonly IReviewRepository _repository;
+    private readonly IChatRepository _repository;
 
-    public ReviewService(IReviewRepository reviewRepository)
+    public ChatService(IChatRepository chatRepository)
     {
-        _repository = reviewRepository;
+        _repository = chatRepository;
+    }
+    
+    public Chat GetOrCreateChatBy(string user1Id, string user2Id)
+    {
+        var existingChat = _repository.GetChatBy(user1Id, user2Id);
+        if (existingChat == null)  return _repository.CreateChat(user1Id, user2Id);
+        return existingChat;
     }
 
-    // public IEnumerable<Review> GetReviewsBy(string userId)
-    // {
-    //     return _repository.GetReviewsBy(userId);
-    // }
-    //
-    // public IEnumerable<Review> GetReviewsBy(int productId)
-    // {
-    //     return _repository.GetReviewsBy(productId);
-    // }
-
-    // public Review? GetReviewBy(int id)
-    // {
-    //     var existingReview = _repository.GetReviewBy(id);
-    //     return existingReview ?? throw new ArgumentException("Review doesn't exist");
-    // }
-
-    public bool CreateReview(Review review)
+    public void SendMessage(Message message)
     {
-        if (!IsReviewComplete(review)) throw new InvalidOperationException("Review isn't complete");
-        var existingReview = _repository.GetReviewBy(review.ProductId, review.UserId);
-        if (existingReview != null) throw new ArgumentException("Review already exists");
-        return _repository.CreateReview(review);
+        if (!IsMessageComplete(message)) throw new InvalidOperationException("Message isn't complete");
+        _repository.SendMessage(message);
     }
-
-    public bool UpdateReview(int id, Review review)
+    
+    private static bool IsMessageComplete(Message message)
     {
-        if (!IsReviewComplete(review)) throw new InvalidOperationException("Review isn't complete");
-        var existingReview = _repository.GetReviewBy(id);
-        if (existingReview == null) throw new ArgumentException("Review doesn't exist");
-        return _repository.UpdateReview(id, review);
-    }
-    private static bool IsReviewComplete(Review review)
-    {
-        if (review.Rating is <= 0 or > 5 || string.IsNullOrWhiteSpace(review.Comment) ||
-            review.ProductId <= 0 || string.IsNullOrWhiteSpace(review.UserId)) return false;
+        if (message.ChatId is <= 0 or > 5 || string.IsNullOrWhiteSpace(message.SenderUserId) ||
+            string.IsNullOrWhiteSpace(message.Text)) return false;
         return true;
     }
+    
+    // public int ID { get; set; }
+    // public int ChatId { get; set; }
+    // public Chat Chat { get; set; }
+    // public string SenderUserId { get; set; }
+    // public ApplicationUser SenderUser { get; set; }
+    // public string? Text { get; set; }
+    // public DateTime SendDate { get; set; }
 }

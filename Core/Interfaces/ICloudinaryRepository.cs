@@ -1,15 +1,17 @@
-﻿using Core.Models;
+﻿using CloudinaryDotNet.Actions;
+using Core.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace Core.Interfaces;
 
-public interface IProductRepository
+public interface ICloudinaryRepository
 {
-    IEnumerable<Product> GetProductsBy(string userId);
-    IEnumerable<Product> GetPageProducts(int lastProduct, int amount);
-    Product? GetProductBy(int id);    
-    Product? GetProductWithReviewsBy(int id);
-    int GetProductCount();
-    int CreateProduct(Product product);
-    bool UpdateProduct(int id, Product product);
-    bool DeleteProduct(int id);
+    ImageUploadResult UploadImage(IFormFile file, string publicId);
+    
+    string GetImageUrl(string publicId);
+
+    ImageUploadResult UpdateImage(IFormFile file, string publicId);
+
+    DeletionResult DeleteImage(string publicId);
+
 }

@@ -12,6 +12,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     }
 
     public DbSet<Product> Products { get; set; }
+    public DbSet<Chat> Chats { get; set; }
+    public DbSet<Message> Messages { get; set; }
     public DbSet<ProductInformation> ProductInformations { get; set; }
     public DbSet<Review> Reviews { get; set; }
 
@@ -21,6 +23,14 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
         modelBuilder.Entity<Product>()
             .HasIndex(p => p.ID)
+            .IsUnique();        
+        
+        modelBuilder.Entity<Chat>()
+            .HasIndex(c => c.ID)
+            .IsUnique();
+        
+        modelBuilder.Entity<Message>()
+            .HasIndex(m => m.ID)
             .IsUnique();
 
         modelBuilder.Entity<ProductInformation>()

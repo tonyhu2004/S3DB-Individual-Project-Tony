@@ -1,63 +1,47 @@
-﻿using CloudinaryDotNet;
-using CloudinaryDotNet.Actions;
-using Core.Interfaces;
+﻿using Core.Interfaces;
+using Core.Models;
+using DataAccess.Data;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Repositories;
 
-public class CloudinaryRepository: ICloudinaryRepository
+public class ChatRepository: IChatRepository
 {
-    private readonly Cloudinary _cloudinary;
+    private readonly ApplicationDbContext _dbContext;
 
-    public CloudinaryRepository(Cloudinary cloudinary) 
+    public ChatRepository(DbContextOptions<ApplicationDbContext> options)
     {
-        _cloudinary = cloudinary;
+        _dbContext = new ApplicationDbContext(options);
     }
-    
-    public ImageUploadResult UploadImage(IFormFile file, string publicId)
+
+    public Chat? GetChatBy(string user1Id, string user2Id)
     {
-        using (var stream = file.OpenReadStream())
+        var chat = _dbContext.Chats
+            .Include(c => c.Messages)
+            .Include(c => c.User1)
+            .Include(c => c.User2)
+            .FirstOrDefault(c => (c.User1Id == user1Id && c.User2Id == user2Id) || (c.User1Id == user2Id && c.User2Id == user1Id));
+
+        return chat;
+    }
+
+    public Chat CreateChat(string user1Id, string user2Id)
+    {
+        var chat = new Chat
         {
-            var uploadParams = new ImageUploadParams
-            {
-                File = new FileDescription(file.FileName, stream),
-                PublicId = publicId,
-            };
+            User1Id = user1Id,
+            User2Id = user2Id,
+        };
+        _dbContext.Chats.Add(chat);
+        _dbContext.SaveChanges();
 
-            var uploadResult =  _cloudinary.Upload(uploadParams);
-            
-            return uploadResult;
-        }
+        return chat;
     }
 
-    public string GetImageUrl(string publicId)
+    public void SendMessage(Message message)
     {
-        var getResourceResult = _cloudinary.GetResource(publicId);
-        var url = getResourceResult.SecureUrl;
-        return url;
+        _dbContext.Messages.Add(message);
+        _dbContext.SaveChanges();
     }
-
-    
-    public ImageUploadResult UpdateImage(IFormFile file, string publicId)
-    {
-        using (var stream = file.OpenReadStream())
-        {
-            var uploadParams = new ImageUploadParams
-            {
-                File = new FileDescription(file.FileName, stream),
-                PublicId = publicId,
-                Overwrite = true
-            };
-
-            var uploadResult =  _cloudinary.Upload(uploadParams);
-            
-            return uploadResult;
-        }
-    }       
-    
-    public DeletionResult DeleteImage(string publicId)
-    {
-        var deleteParams = new DeletionParams(publicId);
-        return _cloudinary.Destroy(deleteParams);
-    }    
 }

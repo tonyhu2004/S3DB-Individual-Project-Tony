@@ -5,8 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 using S3DB_Individual_Project_Tony.CustomFilter;
 using S3DB_Individual_Project_Tony.ViewModels;
 using System.Security.Claims;
+using Microsoft.AspNetCore.SignalR;
 using Org.BouncyCastle.Asn1.Ocsp;
+using S3DB_Individual_Project_Tony.Hub;
 using S3DB_Individual_Project_Tony.RequestModels;
+using Mysqlx.Crud;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace S3DB_Individual_Project_Tony.Controllers;
 
@@ -17,28 +21,30 @@ namespace S3DB_Individual_Project_Tony.Controllers;
 public class ChatController : ControllerBase
 {
     private readonly ChatService _service;
+    private readonly IHubContext<ChatHub, IChatHubClient> _hubContext;
 
-    public ChatController(ChatService chatService)
+    public ChatController(ChatService chatService, IHubContext<ChatHub, IChatHubClient> hubContext)
     {
         _service = chatService;
+        _hubContext = hubContext;
     }
 
-    [HttpGet("{id}")]
-    public IActionResult GetChatBy(string userId1, string userId2)
+    [HttpGet("")]
+    public IActionResult GetChatBy(string user1Id, string user2Id)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        var chat = _service.GetOrCreateChatBy(userId1, userId2);
+        var chat = _service.GetOrCreateChatBy(user1Id, user2Id);
 
         ChatViewModel chatViewModel = new ChatViewModel
         {
             ID = chat.ID,
-            CurrentUser_ID = userId ?? "",
+            CurrentUserId = userId ?? "",
             MessageViewModels = chat.Messages.Select(m => new MessageViewModel
             {
                 ID = m.ID,
-                Chat_ID = chat.ID,
-                SenderUser_ID = m.SenderUser_ID,
+                ChatId = chat.ID,
+                SenderUserId = m.SenderUserId,
                 Text = m.Text,
                 SendDate = m.SendDate,
             }).ToList()
@@ -46,4 +52,42 @@ public class ChatController : ControllerBase
         
         return Ok(chatViewModel);
     }
+    
+    [HttpPost("Group/{chatId}/{connectionId}")]
+    public async Task<IActionResult> AddToGroup(string chatId, string connectionId)
+    {
+        await _hubContext.Groups.AddToGroupAsync(connectionId, chatId);
+        return Ok();
+    }
+    
+    [HttpPost("Message")]
+    public async Task<IActionResult> SendMessage([FromForm]MessageRequest messageRequest)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (userId == null)
+        {
+            return Unauthorized(); 
+        }
+
+        Message message = new Message
+        {
+            ChatId = Convert.ToInt32(messageRequest.ChatId),
+            Text = messageRequest.Text,
+            SendDate = DateTime.Now,
+            SenderUserId = userId,
+        };
+        
+        _service.SendMessage(message);
+
+        await _hubContext.Clients.Group(messageRequest.ChatId).ReceiveMessage(message);
+
+        return Ok();
+    }
+
 }

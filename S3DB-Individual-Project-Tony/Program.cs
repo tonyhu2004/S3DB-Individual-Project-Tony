@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using S3DB_Individual_Project_Tony;
 using S3DB_Individual_Project_Tony.CustomFilter;
+using S3DB_Individual_Project_Tony.Hub;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ShopHopConnection")
@@ -47,10 +48,11 @@ builder.Services.AddSignalR();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowSpecificOrigin", builder =>
-        builder.WithOrigins("http://localhost:5173")
+    options.AddPolicy("AllowSpecificOrigin", policyBuilder =>
+        policyBuilder.WithOrigins("http://localhost:5173")
             .AllowAnyMethod()
-            .AllowAnyHeader());
+            .AllowAnyHeader()
+            .AllowCredentials());
 });
 
 builder.Services.AddEndpointsApiExplorer();

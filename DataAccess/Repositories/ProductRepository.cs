@@ -48,6 +48,7 @@ public class ProductRepository : IProductRepository
     {
         var product = _dbContext.Products
             .Include(p => p.Reviews)
+            .Include(p => p.User)
             .FirstOrDefault(p => p.ID == id);
     
         if (product?.Reviews != null && product.Reviews.Count != 0)
@@ -58,11 +59,11 @@ public class ProductRepository : IProductRepository
         return product;
     }
 
-    public bool CreateProduct(Product product)
+    public int CreateProduct(Product product)
     {
         _dbContext.Products.Add(product);
         _dbContext.SaveChanges();
-        return true;
+        return product.ID;
     }
 
     public bool UpdateProduct(int id, Product product)

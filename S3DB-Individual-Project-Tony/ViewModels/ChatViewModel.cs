@@ -3,6 +3,6 @@
 public class ChatViewModel
 {
     public int ID { get; set; }
-    public string CurrentUser_ID { get; set; }
+    public string CurrentUserId { get; set; }
     public List<MessageViewModel>? MessageViewModels { get; set; }
 }

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Http;
 
 namespace Core.Models;
 
@@ -27,5 +28,11 @@ public class Product
     
     [NotMapped]
     [Column(TypeName = "decimal(10,2)")]
-    public decimal AverageRating { get; set; }
+    public decimal AverageRating { get; set; }    
+    
+    [NotMapped]
+    [Required] public IFormFile FormFile { get; set; } 
+    
+    [NotMapped]
+    public string ImageUrl { get; set; } 
 }

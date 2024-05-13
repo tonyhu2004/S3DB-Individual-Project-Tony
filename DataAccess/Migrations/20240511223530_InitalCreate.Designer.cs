@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240419140123_InitalCreate")]
+    [Migration("20240511223530_InitalCreate")]
     partial class InitalCreate
     {
         /// <inheritdoc />
@@ -86,6 +86,63 @@ namespace DataAccess.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Core.Models.Chat", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("User1Id")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("User2Id")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ID")
+                        .IsUnique();
+
+                    b.HasIndex("User1Id");
+
+                    b.HasIndex("User2Id");
+
+                    b.ToTable("Chats");
+                });
+
+            modelBuilder.Entity("Core.Models.Message", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("ChatId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("SendDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("SenderUserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Text")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ChatId");
+
+                    b.HasIndex("ID")
+                        .IsUnique();
+
+                    b.HasIndex("SenderUserId");
+
+                    b.ToTable("Messages");
+                });
+
             modelBuilder.Entity("Core.Models.Product", b =>
                 {
                     b.Property<int>("ID")
@@ -156,8 +213,8 @@ namespace DataAccess.Migrations
 
                     b.Property<string>("Comment")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(8000)
+                        .HasColumnType("varchar(8000)");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
@@ -312,6 +369,44 @@ namespace DataAccess.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Core.Models.Chat", b =>
+                {
+                    b.HasOne("Core.Models.ApplicationUser", "User1")
+                        .WithMany()
+                        .HasForeignKey("User1Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Core.Models.ApplicationUser", "User2")
+                        .WithMany()
+                        .HasForeignKey("User2Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User1");
+
+                    b.Navigation("User2");
+                });
+
+            modelBuilder.Entity("Core.Models.Message", b =>
+                {
+                    b.HasOne("Core.Models.Chat", "Chat")
+                        .WithMany("Messages")
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Core.Models.ApplicationUser", "SenderUser")
+                        .WithMany()
+                        .HasForeignKey("SenderUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chat");
+
+                    b.Navigation("SenderUser");
+                });
+
             modelBuilder.Entity("Core.Models.Product", b =>
                 {
                     b.HasOne("Core.Models.ApplicationUser", "User")
@@ -343,7 +438,7 @@ namespace DataAccess.Migrations
                         .IsRequired();
 
                     b.HasOne("Core.Models.ApplicationUser", "User")
-                        .WithMany()
+                        .WithMany("Reviews")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -402,6 +497,16 @@ namespace DataAccess.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Core.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("Reviews");
+                });
+
+            modelBuilder.Entity("Core.Models.Chat", b =>
+                {
+                    b.Navigation("Messages");
                 });
 
             modelBuilder.Entity("Core.Models.Product", b =>
