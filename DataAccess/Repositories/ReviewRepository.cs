@@ -31,7 +31,7 @@ public class ReviewRepository : IReviewRepository
     public Review? GetReviewBy(int id)
     {
         return _dbContext.Reviews
-            .FirstOrDefault(r => r.ID == id);
+            .FirstOrDefault(r => r.Id == id);
     }
 
     public bool CreateReview(Review review)
@@ -46,7 +46,7 @@ public class ReviewRepository : IReviewRepository
 
     public bool UpdateReview(int id, Review review)
     {
-        var entity = _dbContext.Reviews.FirstOrDefault(p => p.ID == id);
+        var entity = _dbContext.Reviews.FirstOrDefault(p => p.Id == id);
         if (entity == null) return false;
 
         entity.Rating = review.Rating;

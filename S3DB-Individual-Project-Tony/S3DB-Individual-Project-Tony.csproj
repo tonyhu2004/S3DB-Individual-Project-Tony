@@ -11,9 +11,11 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="CloudinaryDotNet" Version="1.26.2" />
         <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="8.0.2" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.2" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.2" />
+        <PackageReference Include="Microsoft.AspNetCore.SignalR.Common" Version="9.0.0-preview.3.24172.13" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.2" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.2">
             <PrivateAssets>all</PrivateAssets>
@@ -31,6 +33,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\CloudinaryAccess\CloudinaryAccess.csproj" />
         <ProjectReference Include="..\Core\Core.csproj" />
         <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
     </ItemGroup>

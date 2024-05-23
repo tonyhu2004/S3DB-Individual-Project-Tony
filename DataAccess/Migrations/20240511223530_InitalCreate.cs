@@ -168,6 +168,33 @@ namespace DataAccess.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "Chats",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    User1Id = table.Column<string>(type: "varchar(255)", nullable: false),
+                    User2Id = table.Column<string>(type: "varchar(255)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Chats", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Chats_AspNetUsers_User1Id",
+                        column: x => x.User1Id,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Chats_AspNetUsers_User2Id",
+                        column: x => x.User2Id,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
@@ -186,6 +213,35 @@ namespace DataAccess.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Messages",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    ChatId = table.Column<int>(type: "int", nullable: false),
+                    SenderUserId = table.Column<string>(type: "varchar(255)", nullable: false),
+                    Text = table.Column<string>(type: "longtext", nullable: true),
+                    SendDate = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Messages", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Messages_AspNetUsers_SenderUserId",
+                        column: x => x.SenderUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Messages_Chats_ChatId",
+                        column: x => x.ChatId,
+                        principalTable: "Chats",
+                        principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
@@ -219,7 +275,7 @@ namespace DataAccess.Migrations
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     Rating = table.Column<decimal>(type: "decimal(2,1)", nullable: false),
-                    Comment = table.Column<string>(type: "varchar(255)", maxLength: 255, nullable: false),
+                    Comment = table.Column<string>(type: "varchar(8000)", maxLength: 8000, nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "varchar(255)", nullable: false),
                     PublishedDate = table.Column<DateTime>(type: "datetime(6)", nullable: false)
@@ -280,6 +336,38 @@ namespace DataAccess.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Chats_ID",
+                table: "Chats",
+                column: "ID",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Chats_User1Id",
+                table: "Chats",
+                column: "User1Id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Chats_User2Id",
+                table: "Chats",
+                column: "User2Id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Messages_ChatId",
+                table: "Messages",
+                column: "ChatId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Messages_ID",
+                table: "Messages",
+                column: "ID",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Messages_SenderUserId",
+                table: "Messages",
+                column: "SenderUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProductInformations_ID",
                 table: "ProductInformations",
                 column: "ID",
@@ -337,6 +425,9 @@ namespace DataAccess.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Messages");
+
+            migrationBuilder.DropTable(
                 name: "ProductInformations");
 
             migrationBuilder.DropTable(
@@ -344,6 +435,9 @@ namespace DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Chats");
 
             migrationBuilder.DropTable(
                 name: "Products");

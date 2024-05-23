@@ -12,7 +12,7 @@ public class ReviewServiceUnitTest
     {
         var expected = new Review
         {
-            ID = 1,
+            Id = 1,
             Rating = 3,
             Comment = "Pretty mid",
             ProductId = 2,
@@ -33,7 +33,7 @@ public class ReviewServiceUnitTest
     {
         var expected = new Review
         {
-            ID = 1,
+            Id = 1,
             Rating = 3,
             ProductId = 2,
             UserId = "a3",
@@ -51,7 +51,7 @@ public class ReviewServiceUnitTest
     {
         var expected = new Review
         {
-            ID = 1,
+            Id = 1,
             Rating = 3,
             Comment = "Pretty mid",
             ProductId = 2,
@@ -71,7 +71,7 @@ public class ReviewServiceUnitTest
     {
         var expected = new Review
         {
-            ID = 1,
+            Id = 1,
             Rating = 3,
             Comment = "Pretty mid",
             ProductId = 2,
@@ -79,11 +79,11 @@ public class ReviewServiceUnitTest
             PublishedDate = DateTime.Now,
         };
         var mock = new Mock<IReviewRepository>();
-        mock.Setup(p => p.GetReviewBy(expected.ID)).Returns(expected);
-        mock.Setup(p => p.UpdateReview(expected.ID, expected)).Returns(true);
+        mock.Setup(p => p.GetReviewBy(expected.Id)).Returns(expected);
+        mock.Setup(p => p.UpdateReview(expected.Id, expected)).Returns(true);
         var reviewService = new ReviewService(mock.Object);
 
-        var actual = reviewService.UpdateReview(expected.ID, expected);
+        var actual = reviewService.UpdateReview(expected.Id, expected);
         
         Assert.True(actual);
     }
@@ -93,17 +93,17 @@ public class ReviewServiceUnitTest
     {
         var expected = new Review
         {
-            ID = 1,
+            Id = 1,
             Rating = 3,
             ProductId = 2,
             UserId = "a3",
             PublishedDate = DateTime.Now,
         };
         var mock = new Mock<IReviewRepository>();
-        mock.Setup(p => p.GetReviewBy(expected.ID)).Returns(expected);
+        mock.Setup(p => p.GetReviewBy(expected.Id)).Returns(expected);
         var reviewService = new ReviewService(mock.Object);
         
-        Assert.Throws<InvalidOperationException>(() => reviewService.UpdateReview(expected.ID, expected));
+        Assert.Throws<InvalidOperationException>(() => reviewService.UpdateReview(expected.Id, expected));
     }
     
     [Fact]
@@ -111,7 +111,7 @@ public class ReviewServiceUnitTest
     {
         var expected = new Review
         {
-            ID = 1,
+            Id = 1,
             Rating = 3,
             Comment = "Pretty mid",
             ProductId = 2,
@@ -122,6 +122,6 @@ public class ReviewServiceUnitTest
         mock.Setup(p => p.GetReviewBy(expected.ProductId, expected.UserId)).Returns(null as Review);
         var reviewService = new ReviewService(mock.Object);
         
-        Assert.Throws<ArgumentException>(() => reviewService.UpdateReview(expected.ID, expected));
+        Assert.Throws<ArgumentException>(() => reviewService.UpdateReview(expected.Id, expected));
     }
 }

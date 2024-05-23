@@ -25,7 +25,7 @@ public class ProductRepository : IProductRepository
     public IEnumerable<Product> GetPageProducts(int lastProduct, int amount)
     {
         var products = _dbContext.Products
-            .OrderBy(p => p.ID)
+            .OrderBy(p => p.Id)
             .Skip(lastProduct)
             .Take(amount)
             .ToList();
@@ -40,7 +40,7 @@ public class ProductRepository : IProductRepository
 
     public Product? GetProductBy(int id)
     {
-        var product = _dbContext.Products.FirstOrDefault(p => p.ID == id);
+        var product = _dbContext.Products.FirstOrDefault(p => p.Id == id);
         return product;
     }    
     
@@ -48,7 +48,8 @@ public class ProductRepository : IProductRepository
     {
         var product = _dbContext.Products
             .Include(p => p.Reviews)
-            .FirstOrDefault(p => p.ID == id);
+            .Include(p => p.User)
+            .FirstOrDefault(p => p.Id == id);
     
         if (product?.Reviews != null && product.Reviews.Count != 0)
         {
@@ -58,16 +59,16 @@ public class ProductRepository : IProductRepository
         return product;
     }
 
-    public bool CreateProduct(Product product)
+    public int CreateProduct(Product product)
     {
         _dbContext.Products.Add(product);
         _dbContext.SaveChanges();
-        return true;
+        return product.Id;
     }
 
     public bool UpdateProduct(int id, Product product)
     {
-        var entity = _dbContext.Products.FirstOrDefault(p => p.ID == id);
+        var entity = _dbContext.Products.FirstOrDefault(p => p.Id == id);
         if (entity == null) return false;
 
         entity.Name = product.Name;
@@ -82,7 +83,7 @@ public class ProductRepository : IProductRepository
 
     public bool DeleteProduct(int id)
     {
-        var entity = _dbContext.Products.FirstOrDefault(p => p.ID == id);
+        var entity = _dbContext.Products.FirstOrDefault(p => p.Id == id);
         if (entity == null) return false;
 
         _dbContext.Products.Remove(entity);

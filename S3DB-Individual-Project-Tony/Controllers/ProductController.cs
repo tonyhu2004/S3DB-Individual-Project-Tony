@@ -27,15 +27,16 @@ public class ProductController : ControllerBase
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        var products = (List<Product>)_service.GetProductsBy(userId);
+        var products = (List<Product>)_service.GetProductsBy(userId!);
         var productsViewModel = new List<ProductViewModel>();
         foreach (var product in products)
             productsViewModel.Add(new ProductViewModel
             {
-                Id = product.ID,
+                Id = product.Id,
                 Name = product.Name,
                 Price = product.Price,
-                Description = product.Description
+                Description = product.Description,
+                ImageUrl = product.ImageUrl!,
             });
         return Ok(productsViewModel);
     }
@@ -50,10 +51,11 @@ public class ProductController : ControllerBase
         foreach (var product in products)
             productsViewModel.Add(new ProductViewModel
             {
-                Id = product.ID,
+                Id = product.Id,
                 Name = product.Name,
                 Price = product.Price,
-                Description = product.Description
+                Description = product.Description,
+                ImageUrl = product.ImageUrl!,
             });
         var response = new
         {
@@ -69,10 +71,11 @@ public class ProductController : ControllerBase
         var product = _service.GetProductBy(id);
         var productViewModel = new ProductViewModel
         {
-            Id = product.ID,
+            Id = product!.Id,
             Name = product.Name,
             Price = product.Price,
-            Description = product.Description
+            Description = product.Description,
+            ImageUrl = product.ImageUrl!,
         };
         return Ok(productViewModel);
     }
@@ -86,18 +89,21 @@ public class ProductController : ControllerBase
         
         var productWithReviewsViewModel = new ProductWithReviewsViewModel
         {
-            Id = product.ID,
+            Id = product.Id,
             Name = product.Name,
             Price = product.Price,
             Description = product.Description,
             AverageRating = product.AverageRating,
-            UserId = userId ?? "",
-            Reviews = product.Reviews.Select(r => new ReviewViewModel
+            CurrentUserId = userId ?? "",
+            UserId = product.UserId,
+            Username = product.User?.Email?.Substring(0, product.User.Email.IndexOf('@')) ?? "",
+            ImageUrl = product.ImageUrl!,
+            Reviews = product.Reviews?.Select(r => new ReviewViewModel
             {
-                Id = r.ID,
+                Id = r.Id,
                 Rating = r.Rating,
                 Comment = r.Comment,
-                UserId = r.User.Id,
+                UserId = r.User!.Id,
                 Username = r.User.Email!.Substring(0, r.User.Email.IndexOf('@')),
             }).ToList(),
         };
@@ -105,7 +111,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpPost("")]
-    public ActionResult Post([FromBody] ProductRequest productRequest)
+    public ActionResult Post([FromForm] ProductRequest productRequest)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -114,13 +120,14 @@ public class ProductController : ControllerBase
             Name = productRequest.Name,
             Price = productRequest.Price,
             Description = productRequest.Description,
-            UserId = userId,
+            UserId = userId!,
+            FormFile = productRequest.FormFile,
         };
         return Ok(_service.CreateProduct(product));
     }
 
     [HttpPut("{id:int}")]
-    public ActionResult Put(int id, [FromBody] ProductRequest productRequest)
+    public ActionResult Put(int id, [FromForm] ProductRequest productRequest)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -129,7 +136,8 @@ public class ProductController : ControllerBase
             Name = productRequest.Name,
             Price = productRequest.Price,
             Description = productRequest.Description,
-            UserId = userId,
+            UserId = userId!,
+            FormFile = productRequest.FormFile,
         };
         return Ok(_service.UpdateProduct(id, product));
     }
@@ -139,6 +147,6 @@ public class ProductController : ControllerBase
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        return Ok(_service.DeleteProduct(id, userId));
+        return Ok(_service.DeleteProduct(id, userId!));
     }
 }
