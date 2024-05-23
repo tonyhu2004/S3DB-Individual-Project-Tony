@@ -4,5 +4,5 @@ namespace Core.Models;
 
 public class ApplicationUser : IdentityUser
 {
-    public ICollection<Review> Reviews { get; set; }
+    public ICollection<Review>? Reviews { get; set; }
 }

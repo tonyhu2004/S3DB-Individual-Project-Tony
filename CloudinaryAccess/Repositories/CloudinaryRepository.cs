@@ -3,7 +3,7 @@ using CloudinaryDotNet.Actions;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Http;
 
-namespace DataAccess.Repositories;
+namespace CloudinaryAccess.Repositories;
 
 public class CloudinaryRepository: ICloudinaryRepository
 {

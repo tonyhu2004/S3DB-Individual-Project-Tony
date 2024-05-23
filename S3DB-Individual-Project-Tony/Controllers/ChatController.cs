@@ -38,12 +38,12 @@ public class ChatController : ControllerBase
 
         ChatViewModel chatViewModel = new ChatViewModel
         {
-            ID = chat.ID,
+            Id = chat.Id,
             CurrentUserId = userId ?? "",
-            MessageViewModels = chat.Messages.Select(m => new MessageViewModel
+            MessageViewModels = chat?.Messages?.Select(m => new MessageViewModel
             {
-                ID = m.ID,
-                ChatId = chat.ID,
+                Id = m.Id,
+                ChatId = chat.Id,
                 SenderUserId = m.SenderUserId,
                 Text = m.Text,
                 SendDate = m.SendDate,
@@ -61,7 +61,7 @@ public class ChatController : ControllerBase
     }
     
     [HttpPost("Message")]
-    public async Task<IActionResult> SendMessage([FromForm]MessageRequest messageRequest)
+    public async Task<IActionResult> SendMessage([FromForm] MessageRequest messageRequest)
     {
         if (!ModelState.IsValid)
         {
@@ -78,7 +78,7 @@ public class ChatController : ControllerBase
         Message message = new Message
         {
             ChatId = Convert.ToInt32(messageRequest.ChatId),
-            Text = messageRequest.Text,
+            Text = messageRequest.Text!,
             SendDate = DateTime.Now,
             SenderUserId = userId,
         };

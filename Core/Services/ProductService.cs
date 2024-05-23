@@ -21,7 +21,7 @@ public class ProductService
     public IEnumerable<Product> GetProductsBy(string userId)
     {
         var products = _productRepository.GetProductsBy(userId).ToList();
-        products.ForEach(p => p.ImageUrl = _cloudinaryRepository.GetImageUrl(p.Name + p.ID));
+        products.ForEach(p => p.ImageUrl = _cloudinaryRepository.GetImageUrl(p.Name + p.Id));
         return products;
     }
 
@@ -29,7 +29,7 @@ public class ProductService
     {
         var lastProduct = (currentPage - 1) * amount;
         var products = _productRepository.GetPageProducts(lastProduct, amount).ToList();
-        products.ForEach(p => p.ImageUrl = _cloudinaryRepository.GetImageUrl(p.Name + p.ID));
+        products.ForEach(p => p.ImageUrl = _cloudinaryRepository.GetImageUrl(p.Name + p.Id));
         return products;
     }
 
@@ -38,27 +38,27 @@ public class ProductService
         return _productRepository.GetProductCount();
     }
 
-    public Product? GetProductBy(int id)
+    public Product GetProductBy(int id)
     {
         var existingProduct = _productRepository.GetProductBy(id);
         if (existingProduct == null) throw new ArgumentException("Product doesn't exist");
-        existingProduct.ImageUrl = _cloudinaryRepository.GetImageUrl(existingProduct.Name + existingProduct.ID);
+        existingProduct.ImageUrl = _cloudinaryRepository.GetImageUrl(existingProduct.Name + existingProduct.Id);
         return existingProduct;
     }
-    public Product? GetProductWithReviewsBy(int id)
+    public Product GetProductWithReviewsBy(int id)
     {
         var existingProduct = _productRepository.GetProductWithReviewsBy(id);
         if (existingProduct == null) throw new ArgumentException("Product doesn't exist");
         if (existingProduct.Reviews != null && existingProduct.Reviews.Count != 0) existingProduct.AverageRating = CalculateAverageRating(existingProduct.Reviews);
-        existingProduct.ImageUrl = _cloudinaryRepository.GetImageUrl(existingProduct.Name + existingProduct.ID);
+        existingProduct.ImageUrl = _cloudinaryRepository.GetImageUrl(existingProduct.Name + existingProduct.Id);
         return existingProduct;
     }    
     
     public bool CreateProduct(Product product)
     {
         if (!IsProductComplete(product)) throw new InvalidOperationException("Product isn't complete");
-        product.ID = _productRepository.CreateProduct(product);
-        var result = _cloudinaryRepository.UploadImage(product.FormFile, product.Name + product.ID);
+        product.Id = _productRepository.CreateProduct(product);
+        var result = _cloudinaryRepository.UploadImage(product.FormFile!, product.Name + product.Id);
         if (result.Error != null)
         {
             throw new ExternalException("Couldn't add image using cloudinary");
@@ -72,7 +72,7 @@ public class ProductService
         var existingProduct = _productRepository.GetProductBy(id);
         if (existingProduct == null) throw new ArgumentException("Product doesn't exist");
         if (existingProduct.UserId != product.UserId) throw new UnauthorizedAccessException("Product does not belong to user");
-        var result = _cloudinaryRepository.UpdateImage(product.FormFile, product.Name + id);
+        var result = _cloudinaryRepository.UpdateImage(product.FormFile!, product.Name + id);
         if (result.Error != null)
         {
             throw new ExternalException("Couldn't edit image using cloudinary");
@@ -97,7 +97,7 @@ public class ProductService
     private static bool IsProductComplete(Product product)
     {
         if (string.IsNullOrWhiteSpace(product.Name) || product.Price <= 0 ||
-            string.IsNullOrWhiteSpace(product.Description) || string.IsNullOrWhiteSpace(product.UserId)) return false;
+            string.IsNullOrWhiteSpace(product.Description) || string.IsNullOrWhiteSpace(product.UserId) || product.FormFile == null) return false;
         return true;
     }
 

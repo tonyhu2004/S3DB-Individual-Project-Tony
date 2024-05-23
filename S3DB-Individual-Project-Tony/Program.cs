@@ -1,3 +1,4 @@
+using CloudinaryAccess.Repositories;
 using CloudinaryDotNet;
 using Core.Interfaces;
 using Core.Models;
@@ -27,7 +28,7 @@ builder.Services.AddControllers();
 var cloudinaryOptions = builder.Configuration.GetSection("Cloudinary").Get<CloudinaryOptions>(); // Change here
 
 builder.Services.AddSingleton(new Cloudinary(new Account(
-    cloudinaryOptions.CloudName,
+    cloudinaryOptions!.CloudName,
     cloudinaryOptions.ApiKey,
     cloudinaryOptions.ApiSecret)));
 
