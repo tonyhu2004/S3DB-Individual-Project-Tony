@@ -16,11 +16,6 @@ jobs:
       with:
         fetch-depth: 0 # disable shallow clones
           
-    - name: Set up JDK 17
-      uses: actions/setup-java@v1
-      with:
-        java-version: 17
-          
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
@@ -31,12 +26,11 @@ jobs:
       run: dotnet restore 
 
     - name: Build project
-      working-directory: S3DB-Individual-Project-Tony/S3DB-Individual-Project-Tony
+      working-directory: S3DB-Individual-Project-Tony
       run: dotnet build 
 
     - name: Run xUnit tests
       run: dotnet test --no-build --verbosity normal 
-
 
     - name: Run Docker
       working-directory: S3DB-Individual-Project-Tony
