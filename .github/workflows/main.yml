@@ -26,7 +26,6 @@ jobs:
       run: dotnet restore 
 
     - name: Build project
-      working-directory: S3DB-Individual-Project-Tony
       run: dotnet build 
 
     - name: Run xUnit tests
