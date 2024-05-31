@@ -7,9 +7,11 @@ using DataAccess.Data;
 using DataAccess.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using S3DB_Individual_Project_Tony;
 using S3DB_Individual_Project_Tony.CustomFilter;
 using S3DB_Individual_Project_Tony.Hub;
+using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ShopHopConnection")
@@ -25,8 +27,19 @@ builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
 
 builder.Services.AddControllers();
 
-var cloudinaryOptions = builder.Configuration.GetSection("Cloudinary").Get<CloudinaryOptions>(); // Change here
-
+// var cloudinaryOptions = builder.Configuration.GetSection("Cloudinary").Get<CloudinaryOptions>()
+//                         ?? throw new InvalidOperationException("Cloudinary settings not found.");
+//
+// builder.Services.AddSingleton(new Cloudinary(new Account(
+//     cloudinaryOptions!.CloudName,
+//     cloudinaryOptions.ApiKey,
+//     cloudinaryOptions.ApiSecret)));
+var cloudinaryOptions = new CloudinaryOptions
+{
+    CloudName = "dxkq4oonm",
+    ApiKey = "811531388986798",
+    ApiSecret = "fo4F8ZwgYAXumWyZDZy1iY1qfwk"
+};
 builder.Services.AddSingleton(new Cloudinary(new Account(
     cloudinaryOptions!.CloudName,
     cloudinaryOptions.ApiKey,
@@ -46,7 +59,6 @@ builder.Services.AddScoped<CustomExceptionFilter>();
 
 builder.Services.AddSignalR();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin", policyBuilder =>
@@ -57,19 +69,29 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+    });
+
+    options.OperationFilter<SecurityRequirementsOperationFilter>();
+});
 
 var app = builder.Build();
 
 app.MapGroup("/User").MapIdentityApi<ApplicationUser>();
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseCors("AllowSpecificOrigin");
 
@@ -82,3 +104,4 @@ app.MapControllers();
 app.MapHub<ChatHub>("/chatHub"); 
 
 app.Run();
+

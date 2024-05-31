@@ -300,7 +300,7 @@ public class ProductServiceUnitTest
     [Fact]
     public void CreateProduct_WithValidProduct_ReturnsTrue()
     {
-        var testFile = new FormFile(new MemoryStream(), 0, new MemoryStream().Length, "File_Name", "File_Name.pdf");
+        IFormFile testFile = new FormFile(new MemoryStream(), 0, new MemoryStream().Length, "File_Name", "File_Name.pdf");
         
         var product = new Product
         {

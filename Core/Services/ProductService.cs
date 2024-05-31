@@ -1,9 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using Core.Interfaces;
 using Core.Models;
-using CloudinaryDotNet;
-using CloudinaryDotNet.Actions;
-using Microsoft.AspNetCore.Http;
 
 namespace Core.Services;
 

@@ -2,7 +2,6 @@
 using Core.Models;
 using Core.Services;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Moq;
 
 namespace Core.UnitTest;
