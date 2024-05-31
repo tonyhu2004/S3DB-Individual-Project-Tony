@@ -36,38 +36,7 @@ jobs:
     - name: Run xUnit tests
       run: dotnet test --no-build --verbosity normal 
 
-    - name: Cache SonarQube packages
-      uses: actions/cache@v1
-      with:
-        path: ~\.sonar\cache
-        key: ${{ runner.os }}-sonar
-        restore-keys: ${{ runner.os }}-sonar
-        
-    - name: Cache SonarQube scanner
-      id: cache-sonar-scanner
-      uses: actions/cache@v1
-      with:
-        path: .\.sonar\scanner
-        key: ${{ runner.os }}-sonar-scanner
-        restore-keys: ${{ runner.os }}-sonar-scanner
-        
-    - name: Install SonarQube scanner
-      if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
-      run: |
-        mkdir -p ./.sonar/scanner
-        dotnet tool update dotnet-sonarscanner --tool-path ./.sonar/scanner
 
-    - name: Install DotCover
-      run: |
-        dotnet tool install --global JetBrains.dotCover.GlobalTool
-
-    - name: Build and Analyze
-      run: |
-        ./.sonar/scanner/dotnet-sonarscanner begin /k:"ShopHop" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}" /d:sonar.cs.dotcover.reportsPaths=dotCover.Output.html
-        dotnet build --no-incremental
-        dotnet dotcover test --dcReportType=HTML
-        ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
-    
     - name: Run Docker
       working-directory: S3DB-Individual-Project-Tony
       run: |
