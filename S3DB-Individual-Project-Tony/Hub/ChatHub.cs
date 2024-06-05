@@ -1,9 +1,7 @@
-﻿using System.Security.Claims;
-using Core.Models;
+﻿using Core.Models;
 using Core.Services;
 using Microsoft.AspNetCore.SignalR;
 using S3DB_Individual_Project_Tony.RequestModels;
-using S3DB_Individual_Project_Tony.ViewModels;
 
 namespace S3DB_Individual_Project_Tony.Hub;
 
@@ -15,7 +13,7 @@ public class ChatHub : Hub<IChatHubClient>
     {
         _chatService = chatService;
     }
-    
+
     public async Task AddToGroup(MessageRequest messageRequest)
     {
         await Groups.AddToGroupAsync(Context.ConnectionId, messageRequest.ChatId);

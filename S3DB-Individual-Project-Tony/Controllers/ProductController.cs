@@ -1,11 +1,11 @@
-﻿using Core.Models;
+﻿using System.Security.Claims;
+using Core.Models;
 using Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using S3DB_Individual_Project_Tony.CustomFilter;
-using S3DB_Individual_Project_Tony.ViewModels;
-using System.Security.Claims;
 using S3DB_Individual_Project_Tony.RequestModels;
+using S3DB_Individual_Project_Tony.ViewModels;
 
 namespace S3DB_Individual_Project_Tony.Controllers;
 
@@ -36,7 +36,7 @@ public class ProductController : ControllerBase
                 Name = product.Name,
                 Price = product.Price,
                 Description = product.Description,
-                ImageUrl = product.ImageUrl!,
+                ImageUrl = product.ImageUrl!
             });
         return Ok(productsViewModel);
     }
@@ -55,7 +55,7 @@ public class ProductController : ControllerBase
                 Name = product.Name,
                 Price = product.Price,
                 Description = product.Description,
-                ImageUrl = product.ImageUrl!,
+                ImageUrl = product.ImageUrl!
             });
         var response = new
         {
@@ -75,7 +75,7 @@ public class ProductController : ControllerBase
             Name = product.Name,
             Price = product.Price,
             Description = product.Description,
-            ImageUrl = product.ImageUrl!,
+            ImageUrl = product.ImageUrl!
         };
         return Ok(productViewModel);
     }
@@ -86,7 +86,7 @@ public class ProductController : ControllerBase
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var product = _service.GetProductWithReviewsBy(id);
-        
+
         var productWithReviewsViewModel = new ProductWithReviewsViewModel
         {
             Id = product.Id,
@@ -104,8 +104,8 @@ public class ProductController : ControllerBase
                 Rating = r.Rating,
                 Comment = r.Comment,
                 UserId = r.User!.Id,
-                Username = r.User.Email!.Substring(0, r.User.Email.IndexOf('@')),
-            }).ToList(),
+                Username = r.User.Email!.Substring(0, r.User.Email.IndexOf('@'))
+            }).ToList()
         };
         return Ok(productWithReviewsViewModel);
     }
@@ -121,7 +121,7 @@ public class ProductController : ControllerBase
             Price = productRequest.Price,
             Description = productRequest.Description,
             UserId = userId!,
-            FormFile = productRequest.FormFile,
+            FormFile = productRequest.FormFile
         };
         return Ok(_service.CreateProduct(product));
     }
@@ -137,7 +137,7 @@ public class ProductController : ControllerBase
             Price = productRequest.Price,
             Description = productRequest.Description,
             UserId = userId!,
-            FormFile = productRequest.FormFile,
+            FormFile = productRequest.FormFile
         };
         return Ok(_service.UpdateProduct(id, product));
     }

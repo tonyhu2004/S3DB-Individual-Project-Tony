@@ -1,12 +1,11 @@
 ﻿using Core.Interfaces;
 using Core.Models;
 using DataAccess.Data;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Repositories;
 
-public class ChatRepository: IChatRepository
+public class ChatRepository : IChatRepository
 {
     private readonly ApplicationDbContext _dbContext;
 
@@ -21,7 +20,8 @@ public class ChatRepository: IChatRepository
             .Include(c => c.Messages)
             .Include(c => c.User1)
             .Include(c => c.User2)
-            .FirstOrDefault(c => (c.User1Id == user1Id && c.User2Id == user2Id) || (c.User1Id == user2Id && c.User2Id == user1Id));
+            .FirstOrDefault(c =>
+                (c.User1Id == user1Id && c.User2Id == user2Id) || (c.User1Id == user2Id && c.User2Id == user1Id));
 
         return chat;
     }
@@ -31,7 +31,7 @@ public class ChatRepository: IChatRepository
         var chat = new Chat
         {
             User1Id = user1Id,
-            User2Id = user2Id,
+            User2Id = user2Id
         };
         _dbContext.Chats.Add(chat);
         _dbContext.SaveChanges();

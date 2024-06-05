@@ -6,5 +6,4 @@ public interface IChatHubClient
 {
     Task ReceiveMessage(Message message);
     Task AddToGroup(string chatId);
-
 }

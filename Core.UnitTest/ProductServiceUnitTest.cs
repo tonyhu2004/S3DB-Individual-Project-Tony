@@ -54,10 +54,7 @@ public class ProductServiceUnitTest
                 ImageUrl = "Image2"
             }
         };
-        expected.ForEach(p =>
-        {
-            mockCloudinary.Setup(c => c.GetImageUrl(p.Name+p.Id)).Returns("Image" + p.Id);
-        });
+        expected.ForEach(p => { mockCloudinary.Setup(c => c.GetImageUrl(p.Name + p.Id)).Returns("Image" + p.Id); });
         var productService = new ProductService(mockProduct.Object, mockCloudinary.Object);
 
         var actual = (List<Product>)productService.GetProductsBy("a1");
@@ -81,7 +78,7 @@ public class ProductServiceUnitTest
     {
         var mockProduct = new Mock<IProductRepository>();
         var mockCloudinary = new Mock<ICloudinaryRepository>();
-        mockProduct.Setup(p => p.GetPageProducts(0,1)).Returns(new List<Product>
+        mockProduct.Setup(p => p.GetPageProducts(0, 1)).Returns(new List<Product>
         {
             new()
             {
@@ -89,8 +86,8 @@ public class ProductServiceUnitTest
                 Name = "Test1",
                 Price = 12.34M,
                 Description = "Test1",
-                UserId = "a1",
-            },
+                UserId = "a1"
+            }
         });
         var expected = new List<Product>
         {
@@ -102,15 +99,12 @@ public class ProductServiceUnitTest
                 Description = "Test1",
                 UserId = "a1",
                 ImageUrl = "Image1"
-            },
-        };        
-        expected.ForEach(p =>
-        {
-            mockCloudinary.Setup(c => c.GetImageUrl(p.Name+p.Id)).Returns("Image" + p.Id);
-        });
+            }
+        };
+        expected.ForEach(p => { mockCloudinary.Setup(c => c.GetImageUrl(p.Name + p.Id)).Returns("Image" + p.Id); });
         var productService = new ProductService(mockProduct.Object, mockCloudinary.Object);
 
-        var actual = productService.GetPageProducts(1,1).ToList();
+        var actual = productService.GetPageProducts(1, 1).ToList();
 
         Assert.Equal(expected[0].Id, actual[0].Id);
         Assert.Equal(expected[0].Name, actual[0].Name);
@@ -119,13 +113,13 @@ public class ProductServiceUnitTest
         Assert.Equal(expected[0].UserId, actual[0].UserId);
         Assert.Equal(expected[0].ImageUrl, actual[0].ImageUrl);
     }
-    
+
     [Fact]
     public void GetPageProducts_ForPage2_ReturnsPagedProducts()
     {
         var mockProduct = new Mock<IProductRepository>();
         var mockCloudinary = new Mock<ICloudinaryRepository>();
-        mockProduct.Setup(p => p.GetPageProducts(1,1)).Returns(new List<Product>
+        mockProduct.Setup(p => p.GetPageProducts(1, 1)).Returns(new List<Product>
         {
             new()
             {
@@ -133,7 +127,7 @@ public class ProductServiceUnitTest
                 Name = "Test2",
                 Price = 32.47M,
                 Description = "Test2",
-                UserId = "a1",
+                UserId = "a1"
             }
         });
         var expected = new List<Product>
@@ -148,13 +142,10 @@ public class ProductServiceUnitTest
                 ImageUrl = "Image1"
             }
         };
-        expected.ForEach(p =>
-        {
-            mockCloudinary.Setup(c => c.GetImageUrl(p.Name+p.Id)).Returns("Image" + p.Id);
-        });
+        expected.ForEach(p => { mockCloudinary.Setup(c => c.GetImageUrl(p.Name + p.Id)).Returns("Image" + p.Id); });
         var productService = new ProductService(mockProduct.Object, mockCloudinary.Object);
 
-        var actual = productService.GetPageProducts(2,1).ToList();
+        var actual = productService.GetPageProducts(2, 1).ToList();
 
         Assert.Equal(expected[0].Id, actual[0].Id);
         Assert.Equal(expected[0].Name, actual[0].Name);
@@ -177,7 +168,7 @@ public class ProductServiceUnitTest
 
         Assert.Equal(expected, actual);
     }
-    
+
     [Fact]
     public void GetProductBy_ValidId_ReturnsProduct()
     {
@@ -221,7 +212,7 @@ public class ProductServiceUnitTest
 
         Assert.Throws<ArgumentException>(() => productService.GetProductBy(2));
     }
-    
+
     [Fact]
     public void GetProductWithReviewsBy_ValidId_ReturnsProduct()
     {
@@ -244,7 +235,7 @@ public class ProductServiceUnitTest
                     Comment = "Pretty mid",
                     ProductId = 2,
                     UserId = "a3",
-                    PublishedDate = DateTime.Now,
+                    PublishedDate = DateTime.Now
                 },
                 new()
                 {
@@ -253,7 +244,7 @@ public class ProductServiceUnitTest
                     Comment = "Very good",
                     ProductId = 2,
                     UserId = "a2",
-                    PublishedDate = DateTime.Now,
+                    PublishedDate = DateTime.Now
                 }
             }
         };
@@ -277,7 +268,7 @@ public class ProductServiceUnitTest
         Assert.Equal(expected.Reviews[0].ProductId, actual.Reviews?[0].ProductId);
         Assert.Equal(expected.Reviews[0].UserId, actual.Reviews?[0].UserId);
         Assert.Equal(expected.Reviews[0].PublishedDate, actual.Reviews?[0].PublishedDate);
-        
+
         Assert.Equal(expected.Reviews[1].Id, actual.Reviews?[1].Id);
         Assert.Equal(expected.Reviews[1].Rating, actual.Reviews?[1].Rating);
         Assert.Equal(expected.Reviews[1].Comment, actual.Reviews?[1].Comment);
@@ -300,27 +291,28 @@ public class ProductServiceUnitTest
     [Fact]
     public void CreateProduct_WithValidProduct_ReturnsTrue()
     {
-        IFormFile testFile = new FormFile(new MemoryStream(), 0, new MemoryStream().Length, "File_Name", "File_Name.pdf");
-        
+        IFormFile testFile =
+            new FormFile(new MemoryStream(), 0, new MemoryStream().Length, "File_Name", "File_Name.pdf");
+
         var product = new Product
         {
             Name = "Test2",
             Price = 32.47M,
             Description = "Test2",
             UserId = "a1",
-            FormFile = testFile,
+            FormFile = testFile
         };
         var mockProduct = new Mock<IProductRepository>();
         var mockCloudinary = new Mock<ICloudinaryRepository>();
         mockProduct.Setup(p => p.CreateProduct(product)).Returns(2);
-        mockCloudinary.Setup(c => c.UploadImage(testFile,"Test22")).Returns(new ImageUploadResult());
+        mockCloudinary.Setup(c => c.UploadImage(testFile, "Test22")).Returns(new ImageUploadResult());
         var productService = new ProductService(mockProduct.Object, mockCloudinary.Object);
-    
+
         var result = productService.CreateProduct(product);
-    
+
         Assert.True(result);
     }
-    
+
     [Fact]
     public void CreateProduct_WithInvalidProduct_ThrowsInvalidOperationException()
     {
@@ -328,7 +320,7 @@ public class ProductServiceUnitTest
         var mockProduct = new Mock<IProductRepository>();
         var mockCloudinary = new Mock<ICloudinaryRepository>();
         var productService = new ProductService(mockProduct.Object, mockCloudinary.Object);
-    
+
         Assert.Throws<InvalidOperationException>(() => productService.CreateProduct(product));
     }
 
@@ -349,7 +341,7 @@ public class ProductServiceUnitTest
         var mockCloudinary = new Mock<ICloudinaryRepository>();
         mockProduct.Setup(p => p.UpdateProduct(2, product)).Returns(true);
         mockProduct.Setup(p => p.GetProductBy(2)).Returns(product);
-        mockCloudinary.Setup(c => c.UpdateImage(testFile,"Test22")).Returns(new ImageUploadResult());
+        mockCloudinary.Setup(c => c.UpdateImage(testFile, "Test22")).Returns(new ImageUploadResult());
         var productService = new ProductService(mockProduct.Object, mockCloudinary.Object);
 
         var result = productService.UpdateProduct(2, product);
@@ -366,7 +358,7 @@ public class ProductServiceUnitTest
         var mockCloudinary = new Mock<ICloudinaryRepository>();
         mockProduct.Setup(p => p.UpdateProduct(2, product)).Returns(true);
         var productService = new ProductService(mockProduct.Object, mockCloudinary.Object);
-        
+
         Assert.Throws<InvalidOperationException>(() => productService.UpdateProduct(2, product));
     }
 
@@ -381,17 +373,17 @@ public class ProductServiceUnitTest
             Price = 32.47M,
             Description = "Test2",
             UserId = "a1",
-            FormFile = testFile,
+            FormFile = testFile
         };
         var mockProduct = new Mock<IProductRepository>();
         var mockCloudinary = new Mock<ICloudinaryRepository>();
         mockProduct.Setup(p => p.GetProductBy(2)).Returns(null as Product);
-        mockCloudinary.Setup(c => c.UpdateImage(testFile,"Test22")).Returns(new ImageUploadResult());
+        mockCloudinary.Setup(c => c.UpdateImage(testFile, "Test22")).Returns(new ImageUploadResult());
         var productService = new ProductService(mockProduct.Object, mockCloudinary.Object);
 
         Assert.Throws<ArgumentException>(() => productService.UpdateProduct(2, product));
     }
-    
+
     [Fact]
     public void UpdateProduct_DifferentUserId_ThrowsUnauthorizedAccessException()
     {
@@ -403,7 +395,7 @@ public class ProductServiceUnitTest
             Price = 32.47M,
             Description = "Test2",
             UserId = "a2",
-            FormFile = testFile,
+            FormFile = testFile
         };
         var product = new Product
         {
@@ -412,12 +404,12 @@ public class ProductServiceUnitTest
             Price = 32.47M,
             Description = "Test2",
             UserId = "a1",
-            FormFile = testFile,
+            FormFile = testFile
         };
         var mockProduct = new Mock<IProductRepository>();
         var mockCloudinary = new Mock<ICloudinaryRepository>();
         mockProduct.Setup(p => p.GetProductBy(2)).Returns(existingProduct);
-        mockCloudinary.Setup(c => c.UpdateImage(testFile,"Test22")).Returns(new ImageUploadResult());
+        mockCloudinary.Setup(c => c.UpdateImage(testFile, "Test22")).Returns(new ImageUploadResult());
 
         var productService = new ProductService(mockProduct.Object, mockCloudinary.Object);
 
@@ -454,10 +446,10 @@ public class ProductServiceUnitTest
         var mockCloudinary = new Mock<ICloudinaryRepository>();
         mockProduct.Setup(p => p.GetProductBy(2)).Returns(null as Product);
         var productService = new ProductService(mockProduct.Object, mockCloudinary.Object);
-        
+
         Assert.Throws<ArgumentException>(() => productService.DeleteProduct(2, "a1"));
     }
-    
+
     [Fact]
     public void DeleteProduct_DifferentUserId_ThrowsUnauthorizedAccessException()
     {

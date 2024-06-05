@@ -43,6 +43,7 @@ public class ReviewService
         if (existingReview == null) throw new ArgumentException("Review doesn't exist");
         return _repository.UpdateReview(id, review);
     }
+
     private static bool IsReviewComplete(Review review)
     {
         if (review.Rating is <= 0 or > 5 || string.IsNullOrWhiteSpace(review.Comment) ||

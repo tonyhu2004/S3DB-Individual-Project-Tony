@@ -23,12 +23,12 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
         modelBuilder.Entity<Product>()
             .HasIndex(p => p.Id)
-            .IsUnique();        
-        
+            .IsUnique();
+
         modelBuilder.Entity<Chat>()
             .HasIndex(c => c.Id)
             .IsUnique();
-        
+
         modelBuilder.Entity<Message>()
             .HasIndex(m => m.Id)
             .IsUnique();

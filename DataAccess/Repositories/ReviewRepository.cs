@@ -36,7 +36,8 @@ public class ReviewRepository : IReviewRepository
 
     public bool CreateReview(Review review)
     {
-        var entity = _dbContext.Reviews.FirstOrDefault(r=> r.UserId == review.UserId && r.ProductId == review.ProductId);
+        var entity =
+            _dbContext.Reviews.FirstOrDefault(r => r.UserId == review.UserId && r.ProductId == review.ProductId);
         if (entity != null) return false;
 
         _dbContext.Reviews.Add(review);

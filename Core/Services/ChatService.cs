@@ -11,11 +11,11 @@ public class ChatService
     {
         _repository = chatRepository;
     }
-    
+
     public Chat GetOrCreateChatBy(string user1Id, string user2Id)
     {
         var existingChat = _repository.GetChatBy(user1Id, user2Id);
-        if (existingChat == null)  return _repository.CreateChat(user1Id, user2Id);
+        if (existingChat == null) return _repository.CreateChat(user1Id, user2Id);
         return existingChat;
     }
 
@@ -24,7 +24,7 @@ public class ChatService
         if (!IsMessageComplete(message)) throw new InvalidOperationException("Message isn't complete");
         _repository.SendMessage(message);
     }
-    
+
     private static bool IsMessageComplete(Message message)
     {
         if (message.ChatId is <= 0 or > 5 || string.IsNullOrWhiteSpace(message.SenderUserId) ||

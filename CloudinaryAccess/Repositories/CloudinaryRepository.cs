@@ -5,26 +5,26 @@ using Microsoft.AspNetCore.Http;
 
 namespace CloudinaryAccess.Repositories;
 
-public class CloudinaryRepository: ICloudinaryRepository
+public class CloudinaryRepository : ICloudinaryRepository
 {
     private readonly Cloudinary _cloudinary;
 
-    public CloudinaryRepository(Cloudinary cloudinary) 
+    public CloudinaryRepository(Cloudinary cloudinary)
     {
         _cloudinary = cloudinary;
     }
-    
+
     public ImageUploadResult UploadImage(IFormFile file, string publicId)
     {
         using var stream = file.OpenReadStream();
         var uploadParams = new ImageUploadParams
         {
             File = new FileDescription(file.FileName, stream),
-            PublicId = publicId,
+            PublicId = publicId
         };
 
-        var uploadResult =  _cloudinary.Upload(uploadParams);
-            
+        var uploadResult = _cloudinary.Upload(uploadParams);
+
         return uploadResult;
     }
 
@@ -35,7 +35,7 @@ public class CloudinaryRepository: ICloudinaryRepository
         return url;
     }
 
-    
+
     public ImageUploadResult UpdateImage(IFormFile file, string publicId)
     {
         using var stream = file.OpenReadStream();
@@ -46,14 +46,14 @@ public class CloudinaryRepository: ICloudinaryRepository
             Overwrite = true
         };
 
-        var uploadResult =  _cloudinary.Upload(uploadParams);
-            
+        var uploadResult = _cloudinary.Upload(uploadParams);
+
         return uploadResult;
-    }       
-    
+    }
+
     public DeletionResult DeleteImage(string publicId)
     {
         var deleteParams = new DeletionParams(publicId);
         return _cloudinary.Destroy(deleteParams);
-    }    
+    }
 }

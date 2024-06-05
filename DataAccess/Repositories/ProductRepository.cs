@@ -42,20 +42,18 @@ public class ProductRepository : IProductRepository
     {
         var product = _dbContext.Products.FirstOrDefault(p => p.Id == id);
         return product;
-    }    
-    
+    }
+
     public Product? GetProductWithReviewsBy(int id)
     {
         var product = _dbContext.Products
             .Include(p => p.Reviews)
             .Include(p => p.User)
             .FirstOrDefault(p => p.Id == id);
-    
+
         if (product?.Reviews != null && product.Reviews.Count != 0)
-        {
             _dbContext.Entry(product).Collection(p => p.Reviews!).Query().Include(r => r.User).Load();
-        }
-    
+
         return product;
     }
 
