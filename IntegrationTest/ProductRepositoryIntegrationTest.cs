@@ -1,4 +1,5 @@
-﻿using Core.Models;
+﻿using Core.Exceptions;
+using Core.Models;
 using DataAccess.Data;
 using DataAccess.Repositories;
 using Microsoft.AspNetCore.Identity;
@@ -33,7 +34,7 @@ public class ProductRepositoryIntegrationTest : IDisposable
 
     private void SeedAdmin()
     {
-        ApplicationUser defaultUser = new()
+        IdentityUser defaultUser = new()
         {
             Id = "0206A018-5AC6-492D-AB99-10105193D384",
             Email = "admin@gmail.com",
@@ -274,7 +275,7 @@ public class ProductRepositoryIntegrationTest : IDisposable
     }
 
     [Fact]
-    public void UpdateProduct_ReturnsFalse()
+    public void UpdateProduct_ThrowsNotFoundException()
     {
         _context.Products.Add(new Product
         {
@@ -294,11 +295,12 @@ public class ProductRepositoryIntegrationTest : IDisposable
             UserId = "UserId1"
         };
 
-        var result = _repository.UpdateProduct(292347, updatedProduct);
-        DetachEntities();
-        var product = _context.Products.FirstOrDefault(p => p.Id == 1);
+        void UpdateProduct()
+        {
+            _repository.UpdateProduct(292347, updatedProduct);
+        }
 
-        Assert.False(result);
+        Assert.Throws<NotFoundException>(UpdateProduct);
     }
 
     [Fact]
@@ -315,14 +317,12 @@ public class ProductRepositoryIntegrationTest : IDisposable
         _context.SaveChanges();
 
         var result = _repository.DeleteProduct(1);
-        var product = _context.Products.FirstOrDefault(p => p.Id == 1);
 
         Assert.True(result);
-        Assert.Null(product);
     }
 
     [Fact]
-    public void DeleteProduct_ReturnsFalse()
+    public void DeleteProduct_ThrowsNotFoundException()
     {
         _context.Products.Add(new Product
         {
@@ -334,10 +334,11 @@ public class ProductRepositoryIntegrationTest : IDisposable
         });
         _context.SaveChanges();
 
-        var result = _repository.DeleteProduct(2);
-        var product = _context.Products.FirstOrDefault(p => p.Id == 1);
+        void DeleteProduct()
+        {
+            _repository.DeleteProduct(21234);
+        }
 
-        Assert.False(result);
-        Assert.NotNull(product);
+        Assert.Throws<NotFoundException>(DeleteProduct);
     }
 }

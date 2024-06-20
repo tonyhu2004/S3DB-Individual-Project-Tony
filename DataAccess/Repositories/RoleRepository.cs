@@ -1,5 +1,4 @@
 ﻿using Core.Interfaces;
-using Core.Models;
 using DataAccess.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -9,22 +8,22 @@ namespace DataAccess.Repositories;
 public class RoleRepository : IRoleRepository
 {
     private readonly ApplicationDbContext _dbContext;
-    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly UserManager<IdentityUser> _userManager;
 
-    public RoleRepository(DbContextOptions<ApplicationDbContext> options, UserManager<ApplicationUser> userManager)
+    public RoleRepository(DbContextOptions<ApplicationDbContext> options, UserManager<IdentityUser> userManager)
     {
         _dbContext = new ApplicationDbContext(options);
         _userManager = userManager;
     }
 
-    public async Task<ApplicationUser?> AssignRoleToUser(string roleName, string userId)
+    public async Task<IdentityUser?> AssignRoleToUser(string roleName, string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
         if (user != null) await _userManager.AddToRoleAsync(user, roleName);
         return user;
     }
 
-    public async Task<ApplicationUser?> RemoveRoleFromUser(string roleName, string userId)
+    public async Task<IdentityUser?> RemoveRoleFromUser(string roleName, string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
         if (user != null) await _userManager.RemoveFromRoleAsync(user, roleName);

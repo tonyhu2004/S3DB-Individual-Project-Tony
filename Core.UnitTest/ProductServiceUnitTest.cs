@@ -1,4 +1,5 @@
 using CloudinaryDotNet.Actions;
+using Core.Exceptions;
 using Core.Interfaces;
 using Core.Models;
 using Core.Services;
@@ -203,14 +204,14 @@ public class ProductServiceUnitTest
     }
 
     [Fact]
-    public void GetProductBy_InvalidId_ThrowsArgumentException()
+    public void GetProductBy_InvalidId_ThrowsNotFoundException()
     {
         var mockProduct = new Mock<IProductRepository>();
         var mockCloudinary = new Mock<ICloudinaryRepository>();
         mockProduct.Setup(p => p.GetProductBy(2)).Returns(null as Product);
         var productService = new ProductService(mockProduct.Object, mockCloudinary.Object);
 
-        Assert.Throws<ArgumentException>(() => productService.GetProductBy(2));
+        Assert.Throws<NotFoundException>(() => productService.GetProductBy(2));
     }
 
     [Fact]
@@ -278,14 +279,14 @@ public class ProductServiceUnitTest
     }
 
     [Fact]
-    public void GetProductWithReviewsBy_InvalidId_ThrowsArgumentException()
+    public void GetProductWithReviewsBy_InvalidId_ThrowsNotFoundException()
     {
         var mockProduct = new Mock<IProductRepository>();
         var mockCloudinary = new Mock<ICloudinaryRepository>();
         mockProduct.Setup(p => p.GetProductWithReviewsBy(2)).Returns(null as Product);
         var productService = new ProductService(mockProduct.Object, mockCloudinary.Object);
 
-        Assert.Throws<ArgumentException>(() => productService.GetProductWithReviewsBy(2));
+        Assert.Throws<NotFoundException>(() => productService.GetProductWithReviewsBy(2));
     }
 
     [Fact]
@@ -314,14 +315,14 @@ public class ProductServiceUnitTest
     }
 
     [Fact]
-    public void CreateProduct_WithInvalidProduct_ThrowsInvalidOperationException()
+    public void CreateProduct_WithInvalidProduct_ThrowsBadRequestException()
     {
         var product = new Product();
         var mockProduct = new Mock<IProductRepository>();
         var mockCloudinary = new Mock<ICloudinaryRepository>();
         var productService = new ProductService(mockProduct.Object, mockCloudinary.Object);
 
-        Assert.Throws<InvalidOperationException>(() => productService.CreateProduct(product));
+        Assert.Throws<BadRequestException>(() => productService.CreateProduct(product));
     }
 
     [Fact]
@@ -350,7 +351,7 @@ public class ProductServiceUnitTest
     }
 
     [Fact]
-    public void UpdateProduct_WithInvalidProduct_ThrowsInvalidOperationException()
+    public void UpdateProduct_WithInvalidProduct_ThrowsBadRequestException()
     {
         var product = new Product();
 
@@ -359,11 +360,11 @@ public class ProductServiceUnitTest
         mockProduct.Setup(p => p.UpdateProduct(2, product)).Returns(true);
         var productService = new ProductService(mockProduct.Object, mockCloudinary.Object);
 
-        Assert.Throws<InvalidOperationException>(() => productService.UpdateProduct(2, product));
+        Assert.Throws<BadRequestException>(() => productService.UpdateProduct(2, product));
     }
 
     [Fact]
-    public void UpdateProduct_InvalidId_ThrowsArgumentException()
+    public void UpdateProduct_InvalidId_ThrowsNotFoundException()
     {
         var testFile = new FormFile(new MemoryStream(), 0, new MemoryStream().Length, "File_Name", "File_Name.pdf");
         var product = new Product
@@ -381,11 +382,11 @@ public class ProductServiceUnitTest
         mockCloudinary.Setup(c => c.UpdateImage(testFile, "Test22")).Returns(new ImageUploadResult());
         var productService = new ProductService(mockProduct.Object, mockCloudinary.Object);
 
-        Assert.Throws<ArgumentException>(() => productService.UpdateProduct(2, product));
+        Assert.Throws<NotFoundException>(() => productService.UpdateProduct(2, product));
     }
 
     [Fact]
-    public void UpdateProduct_DifferentUserId_ThrowsUnauthorizedAccessException()
+    public void UpdateProduct_DifferentUserId_ThrowsForbiddenException()
     {
         var testFile = new FormFile(new MemoryStream(), 0, new MemoryStream().Length, "File_Name", "File_Name.pdf");
         var existingProduct = new Product
@@ -413,7 +414,7 @@ public class ProductServiceUnitTest
 
         var productService = new ProductService(mockProduct.Object, mockCloudinary.Object);
 
-        Assert.Throws<UnauthorizedAccessException>(() => productService.UpdateProduct(2, product));
+        Assert.Throws<ForbiddenException>(() => productService.UpdateProduct(2, product));
     }
 
     [Fact]
@@ -440,18 +441,18 @@ public class ProductServiceUnitTest
     }
 
     [Fact]
-    public void DeleteProduct_InvalidId_ThrowsArgumentException()
+    public void DeleteProduct_InvalidId_ThrowsNotFoundException()
     {
         var mockProduct = new Mock<IProductRepository>();
         var mockCloudinary = new Mock<ICloudinaryRepository>();
         mockProduct.Setup(p => p.GetProductBy(2)).Returns(null as Product);
         var productService = new ProductService(mockProduct.Object, mockCloudinary.Object);
 
-        Assert.Throws<ArgumentException>(() => productService.DeleteProduct(2, "a1"));
+        Assert.Throws<NotFoundException>(() => productService.DeleteProduct(2, "a1"));
     }
 
     [Fact]
-    public void DeleteProduct_DifferentUserId_ThrowsUnauthorizedAccessException()
+    public void DeleteProduct_DifferentUserId_ThrowsForbiddenException()
     {
         var product = new Product
         {
@@ -466,6 +467,6 @@ public class ProductServiceUnitTest
         mockProduct.Setup(p => p.GetProductBy(2)).Returns(product);
         var productService = new ProductService(mockProduct.Object, mockCloudinary.Object);
 
-        Assert.Throws<UnauthorizedAccessException>(() => productService.DeleteProduct(2, "a2"));
+        Assert.Throws<ForbiddenException>(() => productService.DeleteProduct(2, "a2"));
     }
 }

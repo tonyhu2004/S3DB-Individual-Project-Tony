@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using Core.Exceptions;
 using Core.Interfaces;
 using Core.Models;
 
@@ -38,7 +39,7 @@ public class ProductService
     public Product GetProductBy(int id)
     {
         var existingProduct = _productRepository.GetProductBy(id);
-        if (existingProduct == null) throw new ArgumentException("Product doesn't exist");
+        if (existingProduct == null) throw new NotFoundException("Product doesn't exist");
         existingProduct.ImageUrl = _cloudinaryRepository.GetImageUrl(existingProduct.Name + existingProduct.Id);
         return existingProduct;
     }
@@ -46,7 +47,7 @@ public class ProductService
     public Product GetProductWithReviewsBy(int id)
     {
         var existingProduct = _productRepository.GetProductWithReviewsBy(id);
-        if (existingProduct == null) throw new ArgumentException("Product doesn't exist");
+        if (existingProduct == null) throw new NotFoundException("Product doesn't exist");
         if (existingProduct.Reviews != null && existingProduct.Reviews.Count != 0)
             existingProduct.AverageRating = CalculateAverageRating(existingProduct.Reviews);
         existingProduct.ImageUrl = _cloudinaryRepository.GetImageUrl(existingProduct.Name + existingProduct.Id);
@@ -55,7 +56,7 @@ public class ProductService
 
     public bool CreateProduct(Product product)
     {
-        if (!IsProductComplete(product)) throw new InvalidOperationException("Product isn't complete");
+        if (!IsProductComplete(product)) throw new BadRequestException("Product isn't complete");
         product.Id = _productRepository.CreateProduct(product);
         var result = _cloudinaryRepository.UploadImage(product.FormFile!, product.Name + product.Id);
         if (result.Error != null) throw new ExternalException("Couldn't add image using cloudinary");
@@ -64,11 +65,11 @@ public class ProductService
 
     public bool UpdateProduct(int id, Product product)
     {
-        if (!IsProductComplete(product)) throw new InvalidOperationException("Product isn't complete");
+        if (!IsProductComplete(product)) throw new BadRequestException("Product isn't complete");
         var existingProduct = _productRepository.GetProductBy(id);
-        if (existingProduct == null) throw new ArgumentException("Product doesn't exist");
+        if (existingProduct == null) throw new NotFoundException("Product doesn't exist");
         if (existingProduct.UserId != product.UserId)
-            throw new UnauthorizedAccessException("Product does not belong to user");
+            throw new ForbiddenException("Product does not belong to user");
         var result = _cloudinaryRepository.UpdateImage(product.FormFile!, product.Name + id);
         if (result.Error != null) throw new ExternalException("Couldn't edit image using cloudinary");
         return _productRepository.UpdateProduct(id, product);
@@ -77,8 +78,8 @@ public class ProductService
     public bool DeleteProduct(int id, string userId)
     {
         var existingProduct = _productRepository.GetProductBy(id);
-        if (existingProduct == null) throw new ArgumentException("Product doesn't exist");
-        if (existingProduct.UserId != userId) throw new UnauthorizedAccessException("Product does not belong to user");
+        if (existingProduct == null) throw new NotFoundException("Product doesn't exist");
+        if (existingProduct.UserId != userId) throw new ForbiddenException("Product does not belong to user");
         var deleteResult = _productRepository.DeleteProduct(id);
         var result = _cloudinaryRepository.DeleteImage(existingProduct.Name + id);
         if (result.Error != null) throw new ExternalException("Couldn't delete image using cloudinary");

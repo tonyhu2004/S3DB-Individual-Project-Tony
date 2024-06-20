@@ -1,4 +1,5 @@
-﻿using Core.Interfaces;
+﻿using Core.Exceptions;
+using Core.Interfaces;
 using Core.Models;
 
 namespace Core.Services;
@@ -30,17 +31,17 @@ public class ReviewService
 
     public bool CreateReview(Review review)
     {
-        if (!IsReviewComplete(review)) throw new InvalidOperationException("Review isn't complete");
+        if (!IsReviewComplete(review)) throw new BadRequestException("Review isn't complete");
         var existingReview = _repository.GetReviewBy(review.ProductId, review.UserId);
-        if (existingReview != null) throw new ArgumentException("Review already exists");
+        if (existingReview != null) throw new NotFoundException("Review already exists");
         return _repository.CreateReview(review);
     }
 
     public bool UpdateReview(int id, Review review)
     {
-        if (!IsReviewComplete(review)) throw new InvalidOperationException("Review isn't complete");
+        if (!IsReviewComplete(review)) throw new BadRequestException("Review isn't complete");
         var existingReview = _repository.GetReviewBy(id);
-        if (existingReview == null) throw new ArgumentException("Review doesn't exist");
+        if (existingReview == null) throw new NotFoundException("Review doesn't exist");
         return _repository.UpdateReview(id, review);
     }
 

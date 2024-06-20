@@ -1,5 +1,5 @@
-﻿using Core.Interfaces;
-using Core.Models;
+﻿using Core.Exceptions;
+using Core.Interfaces;
 using Microsoft.AspNetCore.Identity;
 
 namespace Core.Services;
@@ -13,7 +13,7 @@ public class RoleService
         _repository = roleRepository;
     }
 
-    public Task<ApplicationUser?> AssignRoleToUser(string roleName, string userId)
+    public Task<IdentityUser?> AssignRoleToUser(string roleName, string userId)
     {
         return _repository.AssignRoleToUser(roleName, userId);
     }
@@ -21,11 +21,11 @@ public class RoleService
     public Task<IdentityRole> CreateRole(string roleName)
     {
         var existingRole = _repository.GetRoleBy(roleName);
-        if (existingRole != null) throw new InvalidOperationException("Can't create a role that already exists!");
+        if (existingRole != null) throw new BadRequestException("Can't create a role that already exists!");
         return _repository.CreateRole(roleName);
     }
 
-    public Task<ApplicationUser?> RemoveRoleFromUser(string roleName, string userId)
+    public Task<IdentityUser?> RemoveRoleFromUser(string roleName, string userId)
     {
         return _repository.RemoveRoleFromUser(roleName, userId);
     }

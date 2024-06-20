@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 
 namespace Core.Models;
 
@@ -20,9 +21,7 @@ public class Product
 
     [Required] [StringLength(8000)] public string UserId { get; set; } = "";
 
-    public ApplicationUser? User { get; set; }
-
-    public List<ProductInformation>? ProductInformation { get; set; }
+    public IdentityUser? User { get; set; }
 
     public List<Review>? Reviews { get; set; }
 

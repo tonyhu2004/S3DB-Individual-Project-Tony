@@ -1,10 +1,11 @@
 ﻿using Core.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Data;
 
-public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+public class ApplicationDbContext : IdentityDbContext<IdentityUser>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) :
         base(options)
@@ -14,7 +15,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Product> Products { get; set; }
     public DbSet<Chat> Chats { get; set; }
     public DbSet<Message> Messages { get; set; }
-    public DbSet<ProductInformation> ProductInformations { get; set; }
     public DbSet<Review> Reviews { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -31,10 +31,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
         modelBuilder.Entity<Message>()
             .HasIndex(m => m.Id)
-            .IsUnique();
-
-        modelBuilder.Entity<ProductInformation>()
-            .HasIndex(pi => pi.Id)
             .IsUnique();
 
         modelBuilder.Entity<Review>()

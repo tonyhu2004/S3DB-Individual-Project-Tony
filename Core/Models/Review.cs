@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 
 namespace Core.Models;
 
@@ -21,7 +22,7 @@ public class Review
 
     [Required] [StringLength(8000)] public string UserId { get; set; } = "";
 
-    public ApplicationUser? User { get; set; }
+    public IdentityUser? User { get; set; }
 
     [Required] public DateTime PublishedDate { get; set; }
 }

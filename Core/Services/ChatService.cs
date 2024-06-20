@@ -1,4 +1,5 @@
-﻿using Core.Interfaces;
+﻿using Core.Exceptions;
+using Core.Interfaces;
 using Core.Models;
 
 namespace Core.Services;
@@ -21,7 +22,7 @@ public class ChatService
 
     public void SendMessage(Message message)
     {
-        if (!IsMessageComplete(message)) throw new InvalidOperationException("Message isn't complete");
+        if (!IsMessageComplete(message)) throw new BadRequestException("Message isn't complete");
         _repository.SendMessage(message);
     }
 

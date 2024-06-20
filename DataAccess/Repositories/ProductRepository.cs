@@ -1,4 +1,5 @@
-﻿using Core.Interfaces;
+﻿using Core.Exceptions;
+using Core.Interfaces;
 using Core.Models;
 using DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
@@ -67,12 +68,11 @@ public class ProductRepository : IProductRepository
     public bool UpdateProduct(int id, Product product)
     {
         var entity = _dbContext.Products.FirstOrDefault(p => p.Id == id);
-        if (entity == null) return false;
+        if (entity == null) throw new NotFoundException("Product doesn't exist");
 
         entity.Name = product.Name;
         entity.Price = product.Price;
         entity.Description = product.Description;
-        if (product.ProductInformation != null) entity.ProductInformation = product.ProductInformation;
         if (product.Reviews != null) entity.Reviews = product.Reviews;
 
         _dbContext.SaveChanges();
@@ -82,7 +82,7 @@ public class ProductRepository : IProductRepository
     public bool DeleteProduct(int id)
     {
         var entity = _dbContext.Products.FirstOrDefault(p => p.Id == id);
-        if (entity == null) return false;
+        if (entity == null) throw new NotFoundException("Product doesn't exist");
 
         _dbContext.Products.Remove(entity);
         _dbContext.SaveChanges();

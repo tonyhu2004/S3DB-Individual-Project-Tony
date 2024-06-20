@@ -1,4 +1,5 @@
-﻿using Core.Interfaces;
+﻿using Core.Exceptions;
+using Core.Interfaces;
 using Core.Models;
 using Core.Services;
 using Moq;
@@ -29,7 +30,7 @@ public class ReviewServiceUnitTest
     }
 
     [Fact]
-    public void CreateReview_WithInvalidReview_ThrowsInvalidOperationException()
+    public void CreateReview_WithInvalidReview_ThrowsBadRequestException()
     {
         var expected = new Review
         {
@@ -43,11 +44,11 @@ public class ReviewServiceUnitTest
         mock.Setup(p => p.CreateReview(expected)).Returns(true);
         var reviewService = new ReviewService(mock.Object);
 
-        Assert.Throws<InvalidOperationException>(() => reviewService.CreateReview(expected));
+        Assert.Throws<BadRequestException>(() => reviewService.CreateReview(expected));
     }
 
     [Fact]
-    public void CreateReview_AlreadyExists_ThrowsArgumentException()
+    public void CreateReview_AlreadyExists_ThrowsNotFoundException()
     {
         var expected = new Review
         {
@@ -63,7 +64,7 @@ public class ReviewServiceUnitTest
         mock.Setup(p => p.CreateReview(expected)).Returns(true);
         var reviewService = new ReviewService(mock.Object);
 
-        Assert.Throws<ArgumentException>(() => reviewService.CreateReview(expected));
+        Assert.Throws<NotFoundException>(() => reviewService.CreateReview(expected));
     }
 
     [Fact]
@@ -89,7 +90,7 @@ public class ReviewServiceUnitTest
     }
 
     [Fact]
-    public void UpdateReview_WithInvalidReview_ThrowsInvalidOperationException()
+    public void UpdateReview_WithInvalidReview_ThrowsBadRequestException()
     {
         var expected = new Review
         {
@@ -103,11 +104,11 @@ public class ReviewServiceUnitTest
         mock.Setup(p => p.GetReviewBy(expected.Id)).Returns(expected);
         var reviewService = new ReviewService(mock.Object);
 
-        Assert.Throws<InvalidOperationException>(() => reviewService.UpdateReview(expected.Id, expected));
+        Assert.Throws<BadRequestException>(() => reviewService.UpdateReview(expected.Id, expected));
     }
 
     [Fact]
-    public void UpdateReview_InValidId_ThrowsArgumentException()
+    public void UpdateReview_InValidId_ThrowsNotFoundException()
     {
         var expected = new Review
         {
@@ -122,6 +123,6 @@ public class ReviewServiceUnitTest
         mock.Setup(p => p.GetReviewBy(expected.ProductId, expected.UserId)).Returns(null as Review);
         var reviewService = new ReviewService(mock.Object);
 
-        Assert.Throws<ArgumentException>(() => reviewService.UpdateReview(expected.Id, expected));
+        Assert.Throws<NotFoundException>(() => reviewService.UpdateReview(expected.Id, expected));
     }
 }

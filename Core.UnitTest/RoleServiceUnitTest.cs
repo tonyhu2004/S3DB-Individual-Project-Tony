@@ -1,5 +1,4 @@
 ﻿using Core.Interfaces;
-using Core.Models;
 using Core.Services;
 using Microsoft.AspNetCore.Identity;
 using Moq;
@@ -47,7 +46,7 @@ public class RoleServiceUnitTest
     {
         var roleName = "Admin";
         var userId = "user1";
-        var user = new ApplicationUser
+        var user = new IdentityUser
         {
             Email = "user@gmail.com"
         };
@@ -67,7 +66,7 @@ public class RoleServiceUnitTest
     {
         var roleName = "Admin";
         var userId = "user1";
-        var user = new ApplicationUser
+        var user = new IdentityUser
         {
             Email = "user@gmail.com"
         };

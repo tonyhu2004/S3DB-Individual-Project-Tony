@@ -1,7 +1,6 @@
 using CloudinaryAccess.Repositories;
 using CloudinaryDotNet;
 using Core.Interfaces;
-using Core.Models;
 using Core.Services;
 using DataAccess.Data;
 using DataAccess.Repositories;
@@ -20,7 +19,7 @@ var connectionString = builder.Configuration.GetConnectionString("ShopHopConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseMySQL(connectionString));
 
 // Add services to the container.
-builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
+builder.Services.AddIdentityApiEndpoints<IdentityUser>()
     .AddRoles<IdentityRole>()
     .AddRoleManager<RoleManager<IdentityRole>>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -62,7 +61,7 @@ builder.Services.AddSignalR();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin", policyBuilder =>
-        policyBuilder.WithOrigins("http://localhost:5173")
+        policyBuilder.WithOrigins("http://localhost:5173", "http://localhost:5174")
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials());
@@ -83,7 +82,7 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
-app.MapGroup("/User").MapIdentityApi<ApplicationUser>();
+app.MapGroup("/User").MapIdentityApi<IdentityUser>();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {

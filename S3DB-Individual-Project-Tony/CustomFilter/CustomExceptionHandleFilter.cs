@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Core.Exceptions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using MySql.Data.MySqlClient;
 using S3DB_Individual_Project_Tony.ViewModels;
 
 namespace S3DB_Individual_Project_Tony.CustomFilter;
@@ -9,11 +9,11 @@ public class CustomExceptionFilter : IExceptionFilter
 {
     public void OnException(ExceptionContext context)
     {
-        if (context.Exception is MySqlException)
+        if (context.Exception is NotFoundException)
         {
             var error = new ErrorModel
             (
-                500,
+                404,
                 context.Exception.Message,
                 context.Exception.StackTrace
             );
@@ -21,7 +21,7 @@ public class CustomExceptionFilter : IExceptionFilter
             context.HttpContext.Response.StatusCode = 500;
             context.Result = new JsonResult(error);
         }
-        else if (context.Exception is InvalidOperationException)
+        else if (context.Exception is BadRequestException)
         {
             var error = new ErrorModel
             (
@@ -33,7 +33,7 @@ public class CustomExceptionFilter : IExceptionFilter
             context.HttpContext.Response.StatusCode = 400;
             context.Result = new JsonResult(error);
         }
-        else if (context.Exception is UnauthorizedAccessException)
+        else if (context.Exception is ForbiddenException)
         {
             var error = new ErrorModel
             (
@@ -49,12 +49,12 @@ public class CustomExceptionFilter : IExceptionFilter
         {
             var error = new ErrorModel
             (
-                404,
+                500,
                 context.Exception.Message,
                 context.Exception.StackTrace
             );
 
-            context.HttpContext.Response.StatusCode = 404;
+            context.HttpContext.Response.StatusCode = 500;
             context.Result = new JsonResult(error);
         }
 
